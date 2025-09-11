@@ -482,23 +482,14 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                 )}
 
                 {input.type === "image" && input.inputSource === "user" && (
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Upload Instructions</Label>
-                      <Input
-                        value={input.placeholder || ""}
-                        onChange={(e) => updateInput(input.id, { placeholder: e.target.value })}
-                        placeholder="Upload your image"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Example Value</Label>
-                      <Input
-                        value={input.exampleValue || ""}
-                        onChange={(e) => updateInput(input.id, { exampleValue: e.target.value })}
-                        placeholder="Example to show users"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label>Description</Label>
+                    <Textarea
+                      value={input.description || ""}
+                      onChange={(e) => updateInput(input.id, { description: e.target.value })}
+                      placeholder="Describe what this image input is for..."
+                      rows={2}
+                    />
                   </div>
                 )}
 
