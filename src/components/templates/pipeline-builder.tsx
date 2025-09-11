@@ -536,7 +536,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                         AI
                       </Badge>
                     ) : (
-                      <Badge variant={input.inputSource === "user" ? "default" : "outline"}>
+                      <Badge variant="default">
                         {input.inputSource}
                       </Badge>
                     )}
