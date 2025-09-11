@@ -52,6 +52,8 @@ export interface PipelineInput {
   staticValue?: string;
   staticImage?: string;
   staticImageFile?: string;
+  editWithAi?: boolean;
+  imagePrompt?: string;
 }
 
 interface PipelineBuilderProps {
@@ -452,10 +454,22 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                     <div className="space-y-2">
                       <Label>Input Source</Label>
                       <Select
-                        value={input.inputSource}
-                        onValueChange={(value: "user" | "static") =>
-                          updateInput(input.id, { inputSource: value })
-                        }
+                        value={input.editWithAi ? "edit-with-ai" : input.inputSource}
+                        onValueChange={(value: "user" | "static" | "edit-with-ai") => {
+                          if (value === "edit-with-ai") {
+                            updateInput(input.id, { 
+                              inputSource: "user", 
+                              editWithAi: true,
+                              imagePrompt: "Create an image with the following elements:"
+                            });
+                          } else {
+                            updateInput(input.id, { 
+                              inputSource: value as "user" | "static", 
+                              editWithAi: false,
+                              imagePrompt: undefined
+                            });
+                          }
+                        }}
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -463,6 +477,9 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                         <SelectContent>
                           <SelectItem value="user">User Input</SelectItem>
                           <SelectItem value="static">Static Input</SelectItem>
+                          {editedPipeline.type === "video" && (
+                            <SelectItem value="edit-with-ai">Edit with AI</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                     </div>
@@ -481,7 +498,34 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                   </div>
                 )}
 
-                {input.type === "image" && input.inputSource === "user" && (
+                {input.type === "image" && input.editWithAi && (
+                  <div className="space-y-4 border-l-4 border-primary/30 pl-4 bg-primary/5 rounded-r-lg">
+                    <div className="flex items-center gap-2 text-primary">
+                      <ImageIcon className="h-4 w-4" />
+                      <span className="text-sm font-medium">AI Image Generation</span>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Image Generation Prompt</Label>
+                      <Textarea
+                        value={input.imagePrompt || ""}
+                        onChange={(e) => updateInput(input.id, { imagePrompt: e.target.value })}
+                        placeholder="Describe how to generate the image..."
+                        rows={3}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Description</Label>
+                      <Textarea
+                        value={input.description || ""}
+                        onChange={(e) => updateInput(input.id, { description: e.target.value })}
+                        placeholder="Describe what this AI-generated image will be used for..."
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {input.type === "image" && input.inputSource === "user" && !input.editWithAi && (
                   <div className="space-y-2">
                     <Label>Description</Label>
                     <Textarea
