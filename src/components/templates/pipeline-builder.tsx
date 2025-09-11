@@ -530,9 +530,16 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                       <ImageIcon className="h-6 w-6 text-primary" />
                     )}
                     <Badge variant="secondary">{input.type}</Badge>
-                    <Badge variant={input.inputSource === "user" ? "default" : "outline"}>
-                      {input.inputSource}
-                    </Badge>
+                    {input.editWithAi ? (
+                      <Badge variant="default" className="gap-1">
+                        <Sparkles className="h-3 w-3" />
+                        AI
+                      </Badge>
+                    ) : (
+                      <Badge variant={input.inputSource === "user" ? "default" : "outline"}>
+                        {input.inputSource}
+                      </Badge>
+                    )}
                   </div>
                   <Button
                     variant="ghost"
