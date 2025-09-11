@@ -29,7 +29,8 @@ import {
   Video, 
   Type, 
   Upload,
-  HelpCircle
+  HelpCircle,
+  Sparkles
 } from "lucide-react";
 
 export interface Pipeline {
@@ -611,11 +612,11 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                 )}
 
                 {input.type === "image" && input.editWithAi && (
-                  <div className="space-y-4 border-l-4 border-primary/30 pl-4 bg-primary/5 rounded-r-lg">
-                    <div className="flex items-center gap-2 text-primary">
-                      <ImageIcon className="h-4 w-4" />
-                      <span className="text-sm font-medium">AI Image Generation</span>
-                    </div>
+                    <div className="space-y-4 border-l-4 border-primary/30 pl-4 bg-primary/5 rounded-r-lg">
+                     <div className="flex items-center gap-2 text-primary">
+                       <Sparkles className="h-4 w-4" />
+                       <span className="text-sm font-medium">AI Image Generation</span>
+                     </div>
                     <div className="space-y-2">
                       <Label>Image Generation Prompt</Label>
                       <Textarea
