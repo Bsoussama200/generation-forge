@@ -532,15 +532,6 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
         </div>
       </div>
 
-      {/* Prompt Preview */}
-      {editedPipeline.inputs.some(i => i.type === "text" && i.inputSource === "user") && (
-        <div className="space-y-2">
-          <Label>Generated Prompt Preview</Label>
-          <div className="p-3 bg-muted rounded-lg">
-            <code className="text-sm">{generatePromptPreview()}</code>
-          </div>
-        </div>
-      )}
 
       {/* Actions */}
       <div className="flex justify-end gap-2 pt-4 border-t">
