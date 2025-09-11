@@ -370,7 +370,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
           })}
           placeholder={`Describe how to generate ${editedPipeline.type} content...`}
           rows={4}
-          className="resize-none w-full"
+          className="resize-none w-full min-w-0 max-w-none"
         />
       </div>
       </div>
