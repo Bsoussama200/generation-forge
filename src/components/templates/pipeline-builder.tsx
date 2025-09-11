@@ -564,9 +564,9 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                     <div className="space-y-2">
                       <Label>Input Source</Label>
                       <Select
-                        value={input.editWithAi ? "edit-with-ai" : input.inputSource}
-                        onValueChange={(value: "user" | "static" | "edit-with-ai") => {
-                          if (value === "edit-with-ai") {
+                        value={input.editWithAi ? "generate-with-ai" : input.inputSource}
+                        onValueChange={(value: "user" | "static" | "generate-with-ai") => {
+                          if (value === "generate-with-ai") {
                             updateInput(input.id, { 
                               inputSource: "user", 
                               editWithAi: true,
@@ -590,7 +590,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                           <SelectItem value="user">User Input</SelectItem>
                           <SelectItem value="static">Static Input</SelectItem>
                           {editedPipeline.type === "video" && (
-                            <SelectItem value="edit-with-ai">Edit with AI</SelectItem>
+                            <SelectItem value="generate-with-ai">Generate with AI</SelectItem>
                           )}
                         </SelectContent>
                       </Select>
