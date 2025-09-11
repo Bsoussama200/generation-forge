@@ -795,7 +795,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                                   )}
                                 </div>
 
-                                {nestedInput.type === "image" && nestedInput.inputSource === "user" && !input.editWithAi && (
+                                {nestedInput.type === "image" && nestedInput.inputSource === "user" && (
                                   <div className="space-y-1 col-span-2">
                                     <Label className="text-xs flex items-center gap-1">
                                       Guide Image
