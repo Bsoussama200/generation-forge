@@ -426,35 +426,35 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                       onChange={(e) => updateInput(input.id, { name: e.target.value })}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label>Input Source</Label>
-                    <Select
-                      value={input.inputSource}
-                      onValueChange={(value: "user" | "static") =>
-                        updateInput(input.id, { inputSource: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="user">User Input</SelectItem>
-                        <SelectItem value="static">Static Input</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {input.type === "image" && (
+                    <div className="space-y-2">
+                      <Label>Input Source</Label>
+                      <Select
+                        value={input.inputSource}
+                        onValueChange={(value: "user" | "static") =>
+                          updateInput(input.id, { inputSource: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="user">User Input</SelectItem>
+                          <SelectItem value="static">Static Input</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
 
-                {input.inputSource === "user" && (
+                {input.type === "text" && (
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>
-                        {input.type === "text" ? "Placeholder" : "Upload Instructions"}
-                      </Label>
+                      <Label>Placeholder</Label>
                       <Input
                         value={input.placeholder || ""}
                         onChange={(e) => updateInput(input.id, { placeholder: e.target.value })}
-                        placeholder={input.type === "text" ? "Enter placeholder..." : "Upload your image"}
+                        placeholder="Enter placeholder..."
                       />
                     </div>
                     <div className="space-y-2">
@@ -468,51 +468,64 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                   </div>
                 )}
 
-                {input.inputSource === "static" && (
-                  <div className="space-y-2">
-                    <Label>Static Value</Label>
-                    {input.type === "text" ? (
-                      <Textarea
-                        value={input.staticValue || ""}
-                        onChange={(e) => updateInput(input.id, { staticValue: e.target.value })}
-                        placeholder="Enter static text value..."
+                {input.type === "image" && input.inputSource === "user" && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Upload Instructions</Label>
+                      <Input
+                        value={input.placeholder || ""}
+                        onChange={(e) => updateInput(input.id, { placeholder: e.target.value })}
+                        placeholder="Upload your image"
                       />
-                    ) : (
-                      <div className="border-2 border-dashed border-border rounded-lg p-4 text-center">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleStaticImageUpload(input.id, e)}
-                          className="hidden"
-                          id={`static-image-${input.id}`}
-                        />
-                        <label htmlFor={`static-image-${input.id}`} className="cursor-pointer">
-                          {input.staticImageFile ? (
-                            <div className="space-y-2">
-                              <img 
-                                src={input.staticImageFile} 
-                                alt="Static image preview" 
-                                className="max-h-32 mx-auto rounded object-cover"
-                              />
-                              <p className="text-sm text-muted-foreground">
-                                Click to change image
-                              </p>
-                            </div>
-                          ) : (
-                            <>
-                              <Upload className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
-                              <p className="text-sm text-muted-foreground">
-                                Click to upload static image
-                              </p>
-                            </>
-                          )}
-                        </label>
-                      </div>
-                    )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Example Value</Label>
+                      <Input
+                        value={input.exampleValue || ""}
+                        onChange={(e) => updateInput(input.id, { exampleValue: e.target.value })}
+                        placeholder="Example to show users"
+                      />
+                    </div>
                   </div>
                 )}
 
-                {input.inputSource === "user" && (
+                {input.type === "image" && input.inputSource === "static" && (
+                  <div className="space-y-2">
+                    <Label>Static Value</Label>
+                    <div className="border-2 border-dashed border-border rounded-lg p-4 text-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleStaticImageUpload(input.id, e)}
+                        className="hidden"
+                        id={`static-image-${input.id}`}
+                      />
+                      <label htmlFor={`static-image-${input.id}`} className="cursor-pointer">
+                        {input.staticImageFile ? (
+                          <div className="space-y-2">
+                            <img 
+                              src={input.staticImageFile} 
+                              alt="Static image preview" 
+                              className="max-h-32 mx-auto rounded object-cover"
+                            />
+                            <p className="text-sm text-muted-foreground">
+                              Click to change image
+                            </p>
+                          </div>
+                        ) : (
+                          <>
+                            <Upload className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">
+                              Click to upload static image
+                            </p>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                {input.type === "image" && input.inputSource === "user" && (
                   <div className="space-y-2">
                     <Label className="flex items-center gap-1">
                       Guide Image
