@@ -164,19 +164,9 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
                 <ImageIcon className="h-6 w-6 text-muted-foreground" />
               </div>
               <h3 className="font-medium mb-2">No pipelines yet</h3>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-muted-foreground">
                 Add your first pipeline to start building your template
               </p>
-              <div className="flex gap-2 justify-center">
-                <Button onClick={() => addPipeline("image")} className="gap-2">
-                  <ImageIcon className="h-4 w-4" />
-                  Add Image Pipeline
-                </Button>
-                <Button onClick={() => addPipeline("video")} className="gap-2">
-                  <Video className="h-4 w-4" />
-                  Add Video Pipeline
-                </Button>
-              </div>
             </CardContent>
           </Card>
         ) : (
