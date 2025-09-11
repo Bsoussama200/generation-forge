@@ -412,9 +412,9 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {input.type === "text" ? (
-                      <Type className="h-4 w-4 text-primary" />
+                      <Type className="h-6 w-6 text-primary" />
                     ) : (
-                      <ImageIcon className="h-4 w-4 text-primary" />
+                      <ImageIcon className="h-6 w-6 text-primary" />
                     )}
                     <Badge variant="secondary">{input.type}</Badge>
                     <Badge variant={input.inputSource === "user" ? "default" : "outline"}>
