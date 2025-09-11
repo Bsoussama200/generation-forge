@@ -401,6 +401,17 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
     }
   };
 
+  const handleGuideImageUpload = (inputId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        updateInput(inputId, { guideImage: e.target?.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const deleteInput = (inputId: string) => {
     const inputToDelete = editedPipeline.inputs.find(input => input.id === inputId);
     let updatedPrompt = editedPipeline.prompt;
@@ -999,10 +1010,34 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                       <HelpCircle className="h-3 w-3 text-muted-foreground" />
                     </Label>
                     <div className="border-2 border-dashed border-border rounded-lg p-4 text-center">
-                      <Upload className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
-                      <p className="text-sm text-muted-foreground">
-                        Optional: Upload guide image to help users
-                      </p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleGuideImageUpload(input.id, e)}
+                        className="hidden"
+                        id={`guide-image-${input.id}`}
+                      />
+                      <label htmlFor={`guide-image-${input.id}`} className="cursor-pointer">
+                        {input.guideImage ? (
+                          <div className="space-y-2">
+                            <img 
+                              src={input.guideImage} 
+                              alt="Guide image preview" 
+                              className="max-h-32 mx-auto rounded object-cover"
+                            />
+                            <p className="text-sm text-muted-foreground">
+                              Click to change guide image
+                            </p>
+                          </div>
+                        ) : (
+                          <>
+                            <Upload className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">
+                              Optional: Upload guide image to help users
+                            </p>
+                          </>
+                        )}
+                      </label>
                     </div>
                   </div>
                 )}
