@@ -54,6 +54,7 @@ export interface PipelineInput {
   staticImageFile?: string;
   editWithAi?: boolean;
   imagePrompt?: string;
+  nestedInputs?: PipelineInput[];
 }
 
 interface PipelineBuilderProps {
@@ -314,6 +315,55 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
     });
   };
 
+  const addNestedInput = (parentInputId: string, type: "text" | "image") => {
+    const newNestedInput: PipelineInput = {
+      id: `nested-input-${Date.now()}`,
+      name: `${type} Input`,
+      type,
+      inputSource: "user",
+      exampleValue: type === "text" ? "Example text" : undefined
+    };
+
+    setEditedPipeline({
+      ...editedPipeline,
+      inputs: editedPipeline.inputs.map(input =>
+        input.id === parentInputId
+          ? { ...input, nestedInputs: [...(input.nestedInputs || []), newNestedInput] }
+          : input
+      )
+    });
+  };
+
+  const updateNestedInput = (parentInputId: string, nestedInputId: string, updates: Partial<PipelineInput>) => {
+    setEditedPipeline({
+      ...editedPipeline,
+      inputs: editedPipeline.inputs.map(input =>
+        input.id === parentInputId
+          ? {
+              ...input,
+              nestedInputs: input.nestedInputs?.map(nestedInput =>
+                nestedInput.id === nestedInputId ? { ...nestedInput, ...updates } : nestedInput
+              )
+            }
+          : input
+      )
+    });
+  };
+
+  const deleteNestedInput = (parentInputId: string, nestedInputId: string) => {
+    setEditedPipeline({
+      ...editedPipeline,
+      inputs: editedPipeline.inputs.map(input =>
+        input.id === parentInputId
+          ? {
+              ...input,
+              nestedInputs: input.nestedInputs?.filter(nestedInput => nestedInput.id !== nestedInputId)
+            }
+          : input
+      )
+    });
+  };
+
   const generatePromptPreview = () => {
     const userTextInputs = editedPipeline.inputs.filter(
       input => input.type === "text" && input.inputSource === "user"
@@ -460,13 +510,15 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                             updateInput(input.id, { 
                               inputSource: "user", 
                               editWithAi: true,
-                              imagePrompt: "Create an image with the following elements:"
+                              imagePrompt: "Create an image with the following elements:",
+                              nestedInputs: []
                             });
                           } else {
                             updateInput(input.id, { 
                               inputSource: value as "user" | "static", 
                               editWithAi: false,
-                              imagePrompt: undefined
+                              imagePrompt: undefined,
+                              nestedInputs: undefined
                             });
                           }
                         }}
@@ -513,6 +565,106 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                         rows={3}
                       />
                     </div>
+                    
+                    {/* Nested Inputs */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h5 className="font-medium text-sm">Image Generation Inputs</h5>
+                          <p className="text-xs text-muted-foreground">
+                            Configure what data will be used to generate this image
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => addNestedInput(input.id, "text")}
+                            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 h-8 text-xs"
+                            size="sm"
+                          >
+                            <Type className="h-3 w-3" />
+                            Add Text Input
+                          </Button>
+                          <Button
+                            onClick={() => addNestedInput(input.id, "image")}
+                            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 h-8 text-xs"
+                            size="sm"
+                          >
+                            <ImageIcon className="h-3 w-3" />
+                            Add Image Input
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Nested Inputs List */}
+                      {input.nestedInputs && input.nestedInputs.length > 0 ? (
+                        <div className="space-y-2">
+                          {input.nestedInputs.map((nestedInput) => (
+                            <Card key={nestedInput.id} className="p-3 bg-background/50">
+                              <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    {nestedInput.type === "text" ? (
+                                      <Type className="h-4 w-4 text-primary" />
+                                    ) : (
+                                      <ImageIcon className="h-4 w-4 text-primary" />
+                                    )}
+                                    <Badge variant="secondary" className="text-xs">{nestedInput.type}</Badge>
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => deleteNestedInput(input.id, nestedInput.id)}
+                                    className="text-destructive hover:text-destructive h-6 w-6 p-0"
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                  <div className="space-y-1">
+                                    <Label className="text-xs">Input Name</Label>
+                                    <Input
+                                      value={nestedInput.name}
+                                      onChange={(e) => updateNestedInput(input.id, nestedInput.id, { name: e.target.value })}
+                                      className="h-8 text-xs"
+                                    />
+                                  </div>
+                                  {nestedInput.type === "text" && (
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">Example Value</Label>
+                                      <Input
+                                        value={nestedInput.exampleValue || ""}
+                                        onChange={(e) => updateNestedInput(input.id, nestedInput.id, { exampleValue: e.target.value })}
+                                        placeholder="Example text"
+                                        className="h-8 text-xs"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="space-y-1">
+                                  <Label className="text-xs">Description</Label>
+                                  <Textarea
+                                    value={nestedInput.description || ""}
+                                    onChange={(e) => updateNestedInput(input.id, nestedInput.id, { description: e.target.value })}
+                                    placeholder="Describe what this input is for..."
+                                    rows={1}
+                                    className="text-xs resize-none"
+                                  />
+                                </div>
+                              </div>
+                            </Card>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4 border-2 border-dashed border-border/50 rounded-lg bg-background/30">
+                          <p className="text-xs text-muted-foreground">
+                            No inputs configured for AI image generation
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
                     <div className="space-y-2">
                       <Label>Description</Label>
                       <Textarea
