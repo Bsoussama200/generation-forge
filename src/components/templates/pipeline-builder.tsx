@@ -326,41 +326,79 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
 
     setEditedPipeline({
       ...editedPipeline,
-      inputs: editedPipeline.inputs.map(input =>
-        input.id === parentInputId
-          ? { ...input, nestedInputs: [...(input.nestedInputs || []), newNestedInput] }
-          : input
-      )
+      inputs: editedPipeline.inputs.map(input => {
+        if (input.id === parentInputId) {
+          const updatedNestedInputs = [...(input.nestedInputs || []), newNestedInput];
+          let updatedImagePrompt = input.imagePrompt || "";
+          
+          // Auto-add text inputs to image prompt
+          if (type === "text") {
+            updatedImagePrompt += ` {{${newNestedInput.name}}}`;
+          }
+          
+          return { 
+            ...input, 
+            nestedInputs: updatedNestedInputs,
+            imagePrompt: updatedImagePrompt
+          };
+        }
+        return input;
+      })
     });
   };
 
   const updateNestedInput = (parentInputId: string, nestedInputId: string, updates: Partial<PipelineInput>) => {
     setEditedPipeline({
       ...editedPipeline,
-      inputs: editedPipeline.inputs.map(input =>
-        input.id === parentInputId
-          ? {
-              ...input,
-              nestedInputs: input.nestedInputs?.map(nestedInput =>
-                nestedInput.id === nestedInputId ? { ...nestedInput, ...updates } : nestedInput
-              )
-            }
-          : input
-      )
+      inputs: editedPipeline.inputs.map(input => {
+        if (input.id === parentInputId) {
+          const currentNestedInput = input.nestedInputs?.find(ni => ni.id === nestedInputId);
+          let updatedImagePrompt = input.imagePrompt || "";
+          
+          // If updating the name of a nested text input, update the image prompt references
+          if (updates.name && currentNestedInput?.type === "text" && currentNestedInput.name !== updates.name) {
+            const oldReference = `{{${currentNestedInput.name}}}`;
+            const newReference = `{{${updates.name}}}`;
+            updatedImagePrompt = updatedImagePrompt.replace(new RegExp(oldReference.replace(/[{}]/g, '\\$&'), 'g'), newReference);
+          }
+          
+          return {
+            ...input,
+            imagePrompt: updatedImagePrompt,
+            nestedInputs: input.nestedInputs?.map(nestedInput =>
+              nestedInput.id === nestedInputId ? { ...nestedInput, ...updates } : nestedInput
+            )
+          };
+        }
+        return input;
+      })
     });
   };
 
   const deleteNestedInput = (parentInputId: string, nestedInputId: string) => {
     setEditedPipeline({
       ...editedPipeline,
-      inputs: editedPipeline.inputs.map(input =>
-        input.id === parentInputId
-          ? {
-              ...input,
-              nestedInputs: input.nestedInputs?.filter(nestedInput => nestedInput.id !== nestedInputId)
-            }
-          : input
-      )
+      inputs: editedPipeline.inputs.map(input => {
+        if (input.id === parentInputId) {
+          const nestedInputToDelete = input.nestedInputs?.find(ni => ni.id === nestedInputId);
+          let updatedImagePrompt = input.imagePrompt || "";
+          
+          // If deleting a nested text input, remove its reference from the image prompt
+          if (nestedInputToDelete?.type === "text") {
+            const referenceToRemove = `{{${nestedInputToDelete.name}}}`;
+            updatedImagePrompt = updatedImagePrompt.replace(new RegExp(referenceToRemove.replace(/[{}]/g, '\\$&'), 'g'), '');
+            // Clean up any extra spaces
+            updatedImagePrompt = updatedImagePrompt.replace(/\s+/g, ' ').trim();
+          }
+          
+          return {
+            ...input,
+            imagePrompt: updatedImagePrompt,
+            nestedInputs: input.nestedInputs?.filter(nestedInput => nestedInput.id !== nestedInputId)
+          };
+        }
+        return input;
+      })
     });
   };
 
@@ -629,7 +667,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                                       className="h-8 text-xs"
                                     />
                                   </div>
-                                  {nestedInput.type === "text" && (
+                                  {nestedInput.type === "text" ? (
                                     <div className="space-y-1">
                                       <Label className="text-xs">Example Value</Label>
                                       <Input
@@ -638,6 +676,24 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                                         placeholder="Example text"
                                         className="h-8 text-xs"
                                       />
+                                    </div>
+                                  ) : (
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">Input Source</Label>
+                                      <Select
+                                        value={nestedInput.inputSource}
+                                        onValueChange={(value: "user" | "static") =>
+                                          updateNestedInput(input.id, nestedInput.id, { inputSource: value })
+                                        }
+                                      >
+                                        <SelectTrigger className="h-8 text-xs">
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="user">User Input</SelectItem>
+                                          <SelectItem value="static">Static Input</SelectItem>
+                                        </SelectContent>
+                                      </Select>
                                     </div>
                                   )}
                                 </div>
