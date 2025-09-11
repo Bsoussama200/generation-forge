@@ -541,17 +541,35 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
       {/* Prompt Section - Always visible */}
       <div className="space-y-2 w-full">
         <Label htmlFor="pipeline-prompt">Prompt Template *</Label>
-        <Textarea
-          id="pipeline-prompt"
-          value={editedPipeline.prompt}
-          onChange={(e) => setEditedPipeline({
-            ...editedPipeline,
-            prompt: e.target.value
-          })}
-          placeholder={`Describe how to generate ${editedPipeline.type} content...`}
-          rows={4}
-          className="resize-none w-full min-w-0 max-w-none"
-        />
+        <div className="space-y-2">
+          <Textarea
+            id="pipeline-prompt"
+            value={editedPipeline.prompt}
+            onChange={(e) => setEditedPipeline({
+              ...editedPipeline,
+              prompt: e.target.value
+            })}
+            placeholder={`Describe how to generate ${editedPipeline.type} content...`}
+            rows={4}
+            className="resize-none w-full min-w-0 max-w-none"
+          />
+          {/* Prompt Preview */}
+          <div className="p-3 bg-muted/50 rounded-md border text-sm">
+            <div className="font-medium text-xs text-muted-foreground mb-1">Preview:</div>
+            <div className="whitespace-pre-wrap">
+              {editedPipeline.prompt.split(/(\{\{[^}]+\}\})/g).map((part, index) => {
+                if (part.startsWith('{{') && part.endsWith('}}')) {
+                  return (
+                    <span key={index} className="text-blue-600 font-medium bg-blue-50 px-1 rounded">
+                      {part}
+                    </span>
+                  );
+                }
+                return part;
+              })}
+            </div>
+          </div>
+        </div>
       </div>
       </div>
 
@@ -691,15 +709,35 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                        <Sparkles className="h-4 w-4" />
                        <span className="text-sm font-medium">AI Image Generation</span>
                      </div>
-                    <div className="space-y-2">
-                      <Label>Image Generation Prompt</Label>
-                      <Textarea
-                        value={input.imagePrompt || ""}
-                        onChange={(e) => updateInput(input.id, { imagePrompt: e.target.value })}
-                        placeholder="Describe how to generate the image..."
-                        rows={3}
-                      />
-                    </div>
+                     <div className="space-y-2">
+                       <Label>Image Generation Prompt</Label>
+                       <div className="space-y-2">
+                         <Textarea
+                           value={input.imagePrompt || ""}
+                           onChange={(e) => updateInput(input.id, { imagePrompt: e.target.value })}
+                           placeholder="Describe how to generate the image..."
+                           rows={3}
+                         />
+                         {/* Image Prompt Preview */}
+                         {input.imagePrompt && (
+                           <div className="p-2 bg-muted/50 rounded-md border text-sm">
+                             <div className="font-medium text-xs text-muted-foreground mb-1">Preview:</div>
+                             <div className="whitespace-pre-wrap">
+                               {input.imagePrompt.split(/(\{\{[^}]+\}\})/g).map((part, index) => {
+                                 if (part.startsWith('{{') && part.endsWith('}}')) {
+                                   return (
+                                     <span key={index} className="text-blue-600 font-medium bg-blue-50 px-1 rounded">
+                                       {part}
+                                     </span>
+                                   );
+                                 }
+                                 return part;
+                               })}
+                             </div>
+                           </div>
+                         )}
+                       </div>
+                     </div>
                     
                     {/* Nested Inputs */}
                     <div className="space-y-3">
