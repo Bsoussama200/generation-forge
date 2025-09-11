@@ -46,6 +46,7 @@ export interface PipelineInput {
   type: "text" | "image";
   inputSource: "user" | "static";
   placeholder?: string;
+  description?: string;
   exampleValue?: string;
   guideImage?: string;
   staticValue?: string;
@@ -448,21 +449,32 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                 </div>
 
                 {input.type === "text" && (
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Placeholder</Label>
-                      <Input
-                        value={input.placeholder || ""}
-                        onChange={(e) => updateInput(input.id, { placeholder: e.target.value })}
-                        placeholder="Enter placeholder..."
-                      />
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Placeholder</Label>
+                        <Input
+                          value={input.placeholder || ""}
+                          onChange={(e) => updateInput(input.id, { placeholder: e.target.value })}
+                          placeholder="Enter placeholder..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Example Value</Label>
+                        <Input
+                          value={input.exampleValue || ""}
+                          onChange={(e) => updateInput(input.id, { exampleValue: e.target.value })}
+                          placeholder="Example to show users"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label>Example Value</Label>
-                      <Input
-                        value={input.exampleValue || ""}
-                        onChange={(e) => updateInput(input.id, { exampleValue: e.target.value })}
-                        placeholder="Example to show users"
+                      <Label>Description</Label>
+                      <Textarea
+                        value={input.description || ""}
+                        onChange={(e) => updateInput(input.id, { description: e.target.value })}
+                        placeholder="Describe what this input is for..."
+                        rows={2}
                       />
                     </div>
                   </div>
