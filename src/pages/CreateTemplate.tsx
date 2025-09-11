@@ -29,6 +29,7 @@ export default function CreateTemplate() {
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
   const [tokenCost, setTokenCost] = useState(20);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
 
   const handleCategoryToggle = (category: string) => {
@@ -47,6 +48,17 @@ export default function CreateTemplate() {
   const handleTestTemplate = () => {
     // TODO: Implement test template functionality
     console.log("Testing template...");
+  };
+
+  const handleCoverImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setCoverImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handlePublish = () => {
@@ -183,13 +195,37 @@ export default function CreateTemplate() {
                       <div className="space-y-2">
                         <Label>Cover Image</Label>
                         <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                          <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground mb-2">
-                            Click to upload or drag and drop
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Recommended: 400x225px, JPG or PNG
-                          </p>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleCoverImageUpload}
+                            className="hidden"
+                            id="cover-image-upload"
+                          />
+                          <label htmlFor="cover-image-upload" className="cursor-pointer">
+                            {coverImage ? (
+                              <div className="space-y-2">
+                                <img 
+                                  src={coverImage} 
+                                  alt="Cover preview" 
+                                  className="max-h-32 mx-auto rounded object-cover"
+                                />
+                                <p className="text-sm text-muted-foreground">
+                                  Click to change image
+                                </p>
+                              </div>
+                            ) : (
+                              <>
+                                <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
+                                <p className="text-sm text-muted-foreground mb-2">
+                                  Click to upload or drag and drop
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  Recommended: 400x225px, JPG or PNG
+                                </p>
+                              </>
+                            )}
+                          </label>
                         </div>
                       </div>
                     </div>
@@ -230,8 +266,12 @@ export default function CreateTemplate() {
               <CardContent className="space-y-4">
                 {templateName ? (
                   <div className="space-y-3">
-                    <div className="aspect-video bg-gradient-secondary rounded-lg flex items-center justify-center">
-                      <Sparkles className="h-8 w-8 text-primary" />
+                    <div className="aspect-video bg-gradient-secondary rounded-lg flex items-center justify-center overflow-hidden">
+                      {coverImage ? (
+                        <img src={coverImage} alt="Cover preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <Sparkles className="h-8 w-8 text-primary" />
+                      )}
                     </div>
                     <div>
                       <h3 className="font-semibold">{templateName}</h3>
