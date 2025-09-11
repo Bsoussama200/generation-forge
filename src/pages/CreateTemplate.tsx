@@ -72,19 +72,19 @@ export default function CreateTemplate() {
       
       <main className="container py-8 space-y-8">
         {/* Page Header */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">Create New Template</h1>
+            <p className="text-muted-foreground">
+              Build AI-powered templates that others can use to create amazing content
+            </p>
+          </div>
           <Button variant="ghost" size="sm" asChild className="gap-2">
             <a href="/">
               <ArrowLeft className="h-4 w-4" />
               Back to Dashboard
             </a>
           </Button>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold">Create New Template</h1>
-            <p className="text-muted-foreground">
-              Build AI-powered templates that others can use to create amazing content
-            </p>
-          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
