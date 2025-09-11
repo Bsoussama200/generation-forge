@@ -246,9 +246,18 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
       exampleValue: type === "text" ? "Example text" : undefined
     };
     
+    const updatedInputs = [...editedPipeline.inputs, newInput];
+    let updatedPrompt = editedPipeline.prompt;
+    
+    // Auto-add text inputs to prompt
+    if (type === "text") {
+      updatedPrompt += ` {{${newInput.name}}}`;
+    }
+    
     setEditedPipeline({
       ...editedPipeline,
-      inputs: [...editedPipeline.inputs, newInput]
+      inputs: updatedInputs,
+      prompt: updatedPrompt
     });
   };
 
@@ -339,13 +348,6 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
           rows={4}
           className="resize-none"
         />
-        <p className="text-xs text-muted-foreground">
-          Use {"{{"} and {"}}"} to reference user inputs. Available inputs: {" "}
-          {editedPipeline.inputs
-            .filter(input => input.type === "text" && input.inputSource === "user")
-            .map(input => `{{${input.name}}}`)
-            .join(", ") || "None yet - add text inputs below"}
-        </p>
       </div>
       </div>
 
