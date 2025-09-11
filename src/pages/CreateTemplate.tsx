@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, Plus, Upload, Sparkles, Save, TestTube, Eye } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const categories = [
   "Ecommerce", "Viral", "Funny", "Pets", "Events", "Professional", 
@@ -79,116 +80,122 @@ export default function CreateTemplate() {
           <div className="lg:col-span-2 space-y-6">
             {/* Step 1: Template Details */}
             <Card className="bg-gradient-card shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold">
-                    1
-                  </div>
-                  Template Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Template Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="template-name">Template Name *</Label>
-                  <Input
-                    id="template-name"
-                    placeholder="e.g., Viral Instagram Reel Maker"
-                    value={templateName}
-                    onChange={(e) => setTemplateName(e.target.value)}
-                  />
-                </div>
-
-                {/* Description */}
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description *</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Describe what your template does and what kind of content it creates..."
-                    rows={4}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </div>
-
-                {/* Categories */}
-                <div className="space-y-3">
-                  <Label>Categories *</Label>
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-                    {categories.map((category) => (
-                      <div key={category} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={category}
-                          checked={selectedCategories.includes(category)}
-                          onCheckedChange={() => handleCategoryToggle(category)}
-                        />
-                        <label
-                          htmlFor={category}
-                          className="text-sm font-medium leading-none cursor-pointer"
-                        >
-                          {category}
-                        </label>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="template-details" className="border-none">
+                  <AccordionTrigger className="px-6 pt-6 pb-4 hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold">
+                        1
                       </div>
-                    ))}
-                  </div>
-                  {selectedCategories.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {selectedCategories.map((category) => (
-                        <Badge key={category} variant="secondary">
-                          {category}
-                        </Badge>
-                      ))}
+                      Template Details
                     </div>
-                  )}
-                </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <div className="space-y-6">
+                      {/* Template Name */}
+                      <div className="space-y-2">
+                        <Label htmlFor="template-name">Template Name *</Label>
+                        <Input
+                          id="template-name"
+                          placeholder="e.g., Viral Instagram Reel Maker"
+                          value={templateName}
+                          onChange={(e) => setTemplateName(e.target.value)}
+                        />
+                      </div>
 
-                {/* Tags */}
-                <div className="space-y-2">
-                  <Label htmlFor="tags">Tags</Label>
-                  <Input
-                    id="tags"
-                    placeholder="e.g., viral, social media, trending (comma-separated)"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Separate tags with commas to help users discover your template
-                  </p>
-                </div>
+                      {/* Description */}
+                      <div className="space-y-2">
+                        <Label htmlFor="description">Description *</Label>
+                        <Textarea
+                          id="description"
+                          placeholder="Describe what your template does and what kind of content it creates..."
+                          rows={4}
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                        />
+                      </div>
 
-                {/* Token Cost */}
-                <div className="space-y-2">
-                  <Label htmlFor="token-cost">Token Cost per Generation</Label>
-                  <Select value={tokenCost.toString()} onValueChange={(value) => setTokenCost(parseInt(value))}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10">10 tokens</SelectItem>
-                      <SelectItem value="15">15 tokens</SelectItem>
-                      <SelectItem value="20">20 tokens</SelectItem>
-                      <SelectItem value="25">25 tokens</SelectItem>
-                      <SelectItem value="30">30 tokens</SelectItem>
-                      <SelectItem value="35">35 tokens</SelectItem>
-                      <SelectItem value="50">50 tokens</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                      {/* Categories */}
+                      <div className="space-y-3">
+                        <Label>Categories *</Label>
+                        <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                          {categories.map((category) => (
+                            <div key={category} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={category}
+                                checked={selectedCategories.includes(category)}
+                                onCheckedChange={() => handleCategoryToggle(category)}
+                              />
+                              <label
+                                htmlFor={category}
+                                className="text-sm font-medium leading-none cursor-pointer"
+                              >
+                                {category}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                        {selectedCategories.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {selectedCategories.map((category) => (
+                              <Badge key={category} variant="secondary">
+                                {category}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
 
-                {/* Cover Image Upload */}
-                <div className="space-y-2">
-                  <Label>Cover Image</Label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                    <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Recommended: 400x225px, JPG or PNG
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
+                      {/* Tags */}
+                      <div className="space-y-2">
+                        <Label htmlFor="tags">Tags</Label>
+                        <Input
+                          id="tags"
+                          placeholder="e.g., viral, social media, trending (comma-separated)"
+                          value={tags}
+                          onChange={(e) => setTags(e.target.value)}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Separate tags with commas to help users discover your template
+                        </p>
+                      </div>
+
+                      {/* Token Cost */}
+                      <div className="space-y-2">
+                        <Label htmlFor="token-cost">Token Cost per Generation</Label>
+                        <Select value={tokenCost.toString()} onValueChange={(value) => setTokenCost(parseInt(value))}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="10">10 tokens</SelectItem>
+                            <SelectItem value="15">15 tokens</SelectItem>
+                            <SelectItem value="20">20 tokens</SelectItem>
+                            <SelectItem value="25">25 tokens</SelectItem>
+                            <SelectItem value="30">30 tokens</SelectItem>
+                            <SelectItem value="35">35 tokens</SelectItem>
+                            <SelectItem value="50">50 tokens</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Cover Image Upload */}
+                      <div className="space-y-2">
+                        <Label>Cover Image</Label>
+                        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer">
+                          <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground mb-2">
+                            Click to upload or drag and drop
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Recommended: 400x225px, JPG or PNG
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </Card>
 
             {/* Step 2: Pipeline Builder */}
