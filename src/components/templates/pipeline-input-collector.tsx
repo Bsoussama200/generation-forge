@@ -295,6 +295,10 @@ export function PipelineInputCollector({
                     <span className="text-destructive">*</span>
                   </Label>
 
+                  {nestedInput.description && (
+                    <p className="text-xs text-muted-foreground">{nestedInput.description}</p>
+                  )}
+
                   {nestedInput.type === "text" ? (
                     <Textarea
                       id={`${parentInput.id}-${nestedInput.id}`}
