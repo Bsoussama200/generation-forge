@@ -955,7 +955,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                   </div>
                 )}
 
-                {input.type === "image" && input.inputSource === "user" && (
+                {input.type === "image" && input.inputSource === "user" && !input.editWithAi && (
                   <div className="space-y-2">
                     <Label className="flex items-center gap-1">
                       Guide Image
