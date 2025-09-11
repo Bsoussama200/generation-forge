@@ -36,6 +36,7 @@ export interface Pipeline {
   id: string;
   name: string;
   type: "image" | "video";
+  prompt: string;
   inputs: PipelineInput[];
 }
 
@@ -68,6 +69,7 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
       id: `pipeline-${Date.now()}`,
       name: `${type.charAt(0).toUpperCase() + type.slice(1)} Pipeline ${pipelines.length + 1}`,
       type,
+      prompt: `Create a ${type} with the following elements:`,
       inputs: []
     };
     
@@ -321,7 +323,30 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
               <SelectItem value="video">Video Pipeline</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+      </div>
+
+      {/* Prompt Section - Always visible */}
+      <div className="space-y-2">
+        <Label htmlFor="pipeline-prompt">Prompt Template *</Label>
+        <Textarea
+          id="pipeline-prompt"
+          value={editedPipeline.prompt}
+          onChange={(e) => setEditedPipeline({
+            ...editedPipeline,
+            prompt: e.target.value
+          })}
+          placeholder={`Describe how to generate ${editedPipeline.type} content...`}
+          rows={4}
+          className="resize-none"
+        />
+        <p className="text-xs text-muted-foreground">
+          Use {"{{"} and {"}}"} to reference user inputs. Available inputs: {" "}
+          {editedPipeline.inputs
+            .filter(input => input.type === "text" && input.inputSource === "user")
+            .map(input => `{{${input.name}}}`)
+            .join(", ") || "None yet - add text inputs below"}
+        </p>
+      </div>
       </div>
 
       {/* Inputs Section */}
