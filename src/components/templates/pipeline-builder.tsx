@@ -262,8 +262,19 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
   };
 
   const updateInput = (inputId: string, updates: Partial<PipelineInput>) => {
+    const currentInput = editedPipeline.inputs.find(input => input.id === inputId);
+    let updatedPrompt = editedPipeline.prompt;
+    
+    // If updating the name of a text input, update the prompt references
+    if (updates.name && currentInput?.type === "text" && currentInput.name !== updates.name) {
+      const oldReference = `{{${currentInput.name}}}`;
+      const newReference = `{{${updates.name}}}`;
+      updatedPrompt = updatedPrompt.replace(new RegExp(oldReference.replace(/[{}]/g, '\\$&'), 'g'), newReference);
+    }
+    
     setEditedPipeline({
       ...editedPipeline,
+      prompt: updatedPrompt,
       inputs: editedPipeline.inputs.map(input =>
         input.id === inputId ? { ...input, ...updates } : input
       )
