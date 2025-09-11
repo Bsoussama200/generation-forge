@@ -386,6 +386,17 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
     }
   };
 
+  const handleNestedGuideImageUpload = (parentInputId: string, nestedInputId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        updateNestedInput(parentInputId, nestedInputId, { guideImage: e.target?.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const deleteNestedInput = (parentInputId: string, nestedInputId: string) => {
     setEditedPipeline({
       ...editedPipeline,
@@ -708,6 +719,45 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                                     </div>
                                   )}
                                 </div>
+
+                                {nestedInput.type === "image" && nestedInput.inputSource === "user" && (
+                                  <div className="space-y-1 col-span-2">
+                                    <Label className="text-xs flex items-center gap-1">
+                                      Guide Image
+                                      <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                                    </Label>
+                                    <div className="border-2 border-dashed border-border rounded-lg p-3 text-center">
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleNestedGuideImageUpload(input.id, nestedInput.id, e)}
+                                        className="hidden"
+                                        id={`nested-guide-image-${nestedInput.id}`}
+                                      />
+                                      <label htmlFor={`nested-guide-image-${nestedInput.id}`} className="cursor-pointer">
+                                        {nestedInput.guideImage ? (
+                                          <div className="space-y-1">
+                                            <img 
+                                              src={nestedInput.guideImage} 
+                                              alt="Guide image preview" 
+                                              className="max-h-16 mx-auto rounded object-cover"
+                                            />
+                                            <p className="text-xs text-muted-foreground">
+                                              Click to change guide image
+                                            </p>
+                                          </div>
+                                        ) : (
+                                          <>
+                                            <Upload className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
+                                            <p className="text-xs text-muted-foreground">
+                                              Optional: Upload guide image
+                                            </p>
+                                          </>
+                                        )}
+                                      </label>
+                                    </div>
+                                  </div>
+                                )}
 
                                 {nestedInput.type === "image" && nestedInput.inputSource === "static" && (
                                   <div className="space-y-1 col-span-2">
