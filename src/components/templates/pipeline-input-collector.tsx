@@ -229,6 +229,30 @@ export function PipelineInputCollector({
                     <p className="text-xs text-muted-foreground">{input.description}</p>
                   )}
 
+                  {/* Show guide image if available for image inputs */}
+                  {input.type === "image" && input.guideImage && (
+                    <div className="mb-2">
+                      <Label className="text-xs text-muted-foreground mb-1 block">Guide Image:</Label>
+                      <div 
+                        className="cursor-pointer border rounded-lg p-2 bg-background hover:bg-muted/50 transition-colors"
+                        onClick={() => setViewingGuideImage(input.guideImage!)}
+                      >
+                        <div className="flex items-center gap-2">
+                          <img 
+                            src={input.guideImage} 
+                            alt="Guide image" 
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                          <div className="flex-1">
+                            <p className="text-xs font-medium">Click to view guide image</p>
+                            <p className="text-xs text-muted-foreground">Reference for this input</p>
+                          </div>
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {input.type === "text" ? (
                     <Textarea
                       id={input.id}
