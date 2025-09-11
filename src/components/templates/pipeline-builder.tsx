@@ -60,13 +60,13 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
   const [editingPipeline, setEditingPipeline] = useState<Pipeline | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const addPipeline = () => {
+  const addPipeline = (type: "image" | "video") => {
     if (pipelines.length >= 10) return;
     
     const newPipeline: Pipeline = {
       id: `pipeline-${Date.now()}`,
-      name: `Pipeline ${pipelines.length + 1}`,
-      type: "image",
+      name: `${type.charAt(0).toUpperCase() + type.slice(1)} Pipeline ${pipelines.length + 1}`,
+      type,
       inputs: []
     };
     
@@ -107,14 +107,25 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
             Configure up to 10 AI processing pipelines for your template
           </p>
         </div>
-        <Button 
-          onClick={addPipeline}
-          disabled={pipelines.length >= 10}
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Add Pipeline
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => addPipeline("image")}
+            disabled={pipelines.length >= 10}
+            className="gap-2"
+          >
+            <ImageIcon className="h-4 w-4" />
+            Add Image Pipeline
+          </Button>
+          <Button 
+            onClick={() => addPipeline("video")}
+            disabled={pipelines.length >= 10}
+            className="gap-2"
+            variant="outline"
+          >
+            <Video className="h-4 w-4" />
+            Add Video Pipeline
+          </Button>
+        </div>
       </div>
 
       {/* Pipelines List */}
@@ -129,10 +140,16 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
               <p className="text-sm text-muted-foreground mb-4">
                 Add your first pipeline to start building your template
               </p>
-              <Button onClick={addPipeline} className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add Pipeline
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={() => addPipeline("image")} className="gap-2">
+                  <ImageIcon className="h-4 w-4" />
+                  Add Image Pipeline
+                </Button>
+                <Button onClick={() => addPipeline("video")} className="gap-2" variant="outline">
+                  <Video className="h-4 w-4" />
+                  Add Video Pipeline
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ) : (
