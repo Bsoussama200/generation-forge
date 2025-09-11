@@ -335,22 +335,20 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
           </div>
           <div className="flex gap-2">
             <Button
-              variant="outline"
-              size="sm"
               onClick={() => addInput("text")}
-              className="gap-1"
+              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 h-11"
+              size="lg"
             >
-              <Type className="h-3 w-3" />
-              Add Text
+              <Type className="h-4 w-4" />
+              Add Text Input
             </Button>
             <Button
-              variant="outline"
-              size="sm"
               onClick={() => addInput("image")}
-              className="gap-1"
+              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 h-11"
+              size="lg"
             >
-              <ImageIcon className="h-3 w-3" />
-              Add Image
+              <ImageIcon className="h-4 w-4" />
+              Add Image Input
             </Button>
           </div>
         </div>
