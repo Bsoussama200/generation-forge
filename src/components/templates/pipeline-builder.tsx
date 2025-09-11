@@ -294,8 +294,20 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
   };
 
   const deleteInput = (inputId: string) => {
+    const inputToDelete = editedPipeline.inputs.find(input => input.id === inputId);
+    let updatedPrompt = editedPipeline.prompt;
+    
+    // If deleting a text input, remove its reference from the prompt
+    if (inputToDelete?.type === "text") {
+      const referenceToRemove = `{{${inputToDelete.name}}}`;
+      updatedPrompt = updatedPrompt.replace(new RegExp(referenceToRemove.replace(/[{}]/g, '\\$&'), 'g'), '');
+      // Clean up any extra spaces
+      updatedPrompt = updatedPrompt.replace(/\s+/g, ' ').trim();
+    }
+    
     setEditedPipeline({
       ...editedPipeline,
+      prompt: updatedPrompt,
       inputs: editedPipeline.inputs.filter(input => input.id !== inputId)
     });
   };
