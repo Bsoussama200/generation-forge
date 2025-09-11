@@ -541,34 +541,47 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
       {/* Prompt Section - Always visible */}
       <div className="space-y-2 w-full">
         <Label htmlFor="pipeline-prompt">Prompt Template *</Label>
-        <div className="space-y-2">
-          <Textarea
-            id="pipeline-prompt"
-            value={editedPipeline.prompt}
-            onChange={(e) => setEditedPipeline({
-              ...editedPipeline,
-              prompt: e.target.value
-            })}
-            placeholder={`Describe how to generate ${editedPipeline.type} content...`}
-            rows={4}
-            className="resize-none w-full min-w-0 max-w-none"
-          />
-          {/* Prompt Preview */}
-          <div className="p-3 bg-muted/50 rounded-md border text-sm">
-            <div className="font-medium text-xs text-muted-foreground mb-1">Preview:</div>
-            <div className="whitespace-pre-wrap">
-              {editedPipeline.prompt.split(/(\{\{[^}]+\}\})/g).map((part, index) => {
+        <div className="relative">
+          <div 
+            className="min-h-[100px] p-3 border border-input bg-background rounded-md text-sm resize-none w-full min-w-0 max-w-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 whitespace-pre-wrap overflow-auto"
+            contentEditable
+            suppressContentEditableWarning={true}
+            onInput={(e) => {
+              const text = e.currentTarget.textContent || "";
+              setEditedPipeline({
+                ...editedPipeline,
+                prompt: text
+              });
+            }}
+            onBlur={(e) => {
+              // Re-render with highlighting
+              const text = e.currentTarget.textContent || "";
+              e.currentTarget.innerHTML = text.split(/(\{\{[^}]+\}\})/g).map((part) => {
                 if (part.startsWith('{{') && part.endsWith('}}')) {
-                  return (
-                    <span key={index} className="text-blue-600 font-medium bg-blue-50 px-1 rounded">
-                      {part}
-                    </span>
-                  );
+                  return `<span style="color: rgb(37, 99, 235); font-weight: 500; background-color: rgb(239, 246, 255); padding: 1px 4px; border-radius: 3px;">${part}</span>`;
                 }
                 return part;
-              })}
+              }).join('');
+            }}
+            onFocus={(e) => {
+              // Remove highlighting for editing
+              e.currentTarget.textContent = editedPipeline.prompt;
+            }}
+            style={{ minHeight: '100px' }}
+            dangerouslySetInnerHTML={{
+              __html: editedPipeline.prompt.split(/(\{\{[^}]+\}\})/g).map((part) => {
+                if (part.startsWith('{{') && part.endsWith('}}')) {
+                  return `<span style="color: rgb(37, 99, 235); font-weight: 500; background-color: rgb(239, 246, 255); padding: 1px 4px; border-radius: 3px;">${part}</span>`;
+                }
+                return part;
+              }).join('')
+            }}
+          />
+          {!editedPipeline.prompt && (
+            <div className="absolute top-3 left-3 text-muted-foreground pointer-events-none">
+              Describe how to generate {editedPipeline.type} content...
             </div>
-          </div>
+          )}
         </div>
       </div>
       </div>
@@ -711,29 +724,42 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                      </div>
                      <div className="space-y-2">
                        <Label>Image Generation Prompt</Label>
-                       <div className="space-y-2">
-                         <Textarea
-                           value={input.imagePrompt || ""}
-                           onChange={(e) => updateInput(input.id, { imagePrompt: e.target.value })}
-                           placeholder="Describe how to generate the image..."
-                           rows={3}
+                       <div className="relative">
+                         <div 
+                           className="min-h-[75px] p-3 border border-input bg-background rounded-md text-sm resize-none w-full min-w-0 max-w-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 whitespace-pre-wrap overflow-auto"
+                           contentEditable
+                           suppressContentEditableWarning={true}
+                           onInput={(e) => {
+                             const text = e.currentTarget.textContent || "";
+                             updateInput(input.id, { imagePrompt: text });
+                           }}
+                           onBlur={(e) => {
+                             // Re-render with highlighting
+                             const text = e.currentTarget.textContent || "";
+                             e.currentTarget.innerHTML = text.split(/(\{\{[^}]+\}\})/g).map((part) => {
+                               if (part.startsWith('{{') && part.endsWith('}}')) {
+                                 return `<span style="color: rgb(37, 99, 235); font-weight: 500; background-color: rgb(239, 246, 255); padding: 1px 4px; border-radius: 3px;">${part}</span>`;
+                               }
+                               return part;
+                             }).join('');
+                           }}
+                           onFocus={(e) => {
+                             // Remove highlighting for editing
+                             e.currentTarget.textContent = input.imagePrompt || "";
+                           }}
+                           style={{ minHeight: '75px' }}
+                           dangerouslySetInnerHTML={{
+                             __html: (input.imagePrompt || "").split(/(\{\{[^}]+\}\})/g).map((part) => {
+                               if (part.startsWith('{{') && part.endsWith('}}')) {
+                                 return `<span style="color: rgb(37, 99, 235); font-weight: 500; background-color: rgb(239, 246, 255); padding: 1px 4px; border-radius: 3px;">${part}</span>`;
+                               }
+                               return part;
+                             }).join('')
+                           }}
                          />
-                         {/* Image Prompt Preview */}
-                         {input.imagePrompt && (
-                           <div className="p-2 bg-muted/50 rounded-md border text-sm">
-                             <div className="font-medium text-xs text-muted-foreground mb-1">Preview:</div>
-                             <div className="whitespace-pre-wrap">
-                               {input.imagePrompt.split(/(\{\{[^}]+\}\})/g).map((part, index) => {
-                                 if (part.startsWith('{{') && part.endsWith('}}')) {
-                                   return (
-                                     <span key={index} className="text-blue-600 font-medium bg-blue-50 px-1 rounded">
-                                       {part}
-                                     </span>
-                                   );
-                                 }
-                                 return part;
-                               })}
-                             </div>
+                         {!input.imagePrompt && (
+                           <div className="absolute top-3 left-3 text-muted-foreground pointer-events-none">
+                             Describe how to generate the image...
                            </div>
                          )}
                        </div>
