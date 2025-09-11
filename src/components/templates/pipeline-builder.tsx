@@ -33,6 +33,7 @@ import {
   Sparkles,
   Play
 } from "lucide-react";
+import { PipelineInputCollector } from "./pipeline-input-collector";
 
 export interface Pipeline {
   id: string;
@@ -68,6 +69,7 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
   const [editingPipeline, setEditingPipeline] = useState<Pipeline | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [runningPipeline, setRunningPipeline] = useState<Pipeline | null>(null);
+  const [isInputCollectorOpen, setIsInputCollectorOpen] = useState(false);
   const [isRunDialogOpen, setIsRunDialogOpen] = useState(false);
   const [runResult, setRunResult] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -103,11 +105,38 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
     setIsDialogOpen(false);
   };
 
-  const runPipeline = async (pipeline: Pipeline) => {
+  const initiatePipelineRun = (pipeline: Pipeline) => {
     setRunningPipeline(pipeline);
+    
+    // Check if there are user inputs that need to be collected
+    const userInputs = pipeline.inputs.filter(input => 
+      input.inputSource === "user" && !input.editWithAi
+    );
+    
+    const nestedUserInputs = pipeline.inputs.some(input => 
+      input.editWithAi && input.nestedInputs?.some(ni => ni.inputSource === "user")
+    );
+
+    if (userInputs.length > 0 || nestedUserInputs) {
+      // Show input collector dialog
+      setIsInputCollectorOpen(true);
+    } else {
+      // Run directly if no user inputs needed
+      runPipeline(pipeline, [], []);
+    }
+  };
+
+  const runPipeline = async (
+    pipeline: Pipeline, 
+    collectedInputs: Array<{inputId: string, value: string | File, type: "text" | "image"}>,
+    collectedNestedInputs: Array<{parentInputId: string, nestedInputId: string, value: string | File, type: "text" | "image"}>
+  ) => {
     setIsRunDialogOpen(true);
     setIsRunning(true);
     setRunResult(null);
+
+    // Log collected inputs for debugging
+    console.log("Running pipeline with inputs:", { collectedInputs, collectedNestedInputs });
 
     // Simulate pipeline execution
     await new Promise(resolve => setTimeout(resolve, 3000));
@@ -195,7 +224,7 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => runPipeline(pipeline)}
+                      onClick={() => initiatePipelineRun(pipeline)}
                       className="gap-1 text-green-600 hover:text-green-700 border-green-200 hover:border-green-300"
                     >
                       <Play className="h-3 w-3" />
@@ -247,6 +276,14 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Pipeline Input Collector */}
+      <PipelineInputCollector
+        pipeline={runningPipeline}
+        isOpen={isInputCollectorOpen}
+        onClose={() => setIsInputCollectorOpen(false)}
+        onRun={(inputs, nestedInputs) => runPipeline(runningPipeline!, inputs, nestedInputs)}
+      />
 
       {/* Pipeline Run Dialog */}
       <Dialog open={isRunDialogOpen} onOpenChange={setIsRunDialogOpen}>
