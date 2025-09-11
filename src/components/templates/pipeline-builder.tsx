@@ -745,16 +745,18 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                                   </div>
                                 )}
 
-                                <div className="space-y-1 col-span-2">
-                                  <Label className="text-xs">Description</Label>
-                                  <Textarea
-                                    value={nestedInput.description || ""}
-                                    onChange={(e) => updateNestedInput(input.id, nestedInput.id, { description: e.target.value })}
-                                    placeholder="Describe what this input is for..."
-                                    rows={1}
-                                    className="text-xs resize-none"
-                                  />
-                                </div>
+                                {nestedInput.type !== "image" || nestedInput.inputSource !== "static" ? (
+                                  <div className="space-y-1 col-span-2">
+                                    <Label className="text-xs">Description</Label>
+                                    <Textarea
+                                      value={nestedInput.description || ""}
+                                      onChange={(e) => updateNestedInput(input.id, nestedInput.id, { description: e.target.value })}
+                                      placeholder="Describe what this input is for..."
+                                      rows={1}
+                                      className="text-xs resize-none"
+                                    />
+                                  </div>
+                                ) : null}
                               </div>
                             </Card>
                           ))}
