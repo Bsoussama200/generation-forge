@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Header } from "@/components/ui/header";
+import { PipelineBuilder, type Pipeline } from "@/components/templates/pipeline-builder";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ export default function CreateTemplate() {
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
   const [tokenCost, setTokenCost] = useState(20);
+  const [pipelines, setPipelines] = useState<Pipeline[]>([]);
 
   const handleCategoryToggle = (category: string) => {
     setSelectedCategories(prev => 
@@ -189,21 +191,21 @@ export default function CreateTemplate() {
               </CardContent>
             </Card>
 
-            {/* Step 2: Pipeline Builder (Coming Soon) */}
-            <Card className="bg-gradient-card shadow-soft opacity-60">
+            {/* Step 2: Pipeline Builder */}
+            <Card className="bg-gradient-card shadow-soft">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground text-sm font-bold">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold">
                     2
                   </div>
                   Pipeline Builder
-                  <Badge variant="outline" className="ml-auto">Coming Soon</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">
-                  Configure AI pipelines and input fields for your template. This feature will be available soon.
-                </p>
+                <PipelineBuilder
+                  pipelines={pipelines}
+                  onPipelinesChange={setPipelines}
+                />
               </CardContent>
             </Card>
           </div>
