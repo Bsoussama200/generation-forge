@@ -107,7 +107,7 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
             Configure up to 10 AI processing pipelines for your template
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-center">
           <Button 
             onClick={() => addPipeline("image")}
             disabled={pipelines.length >= 10}
@@ -139,7 +139,7 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
               <p className="text-sm text-muted-foreground mb-4">
                 Add your first pipeline to start building your template
               </p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 justify-center">
                 <Button onClick={() => addPipeline("image")} className="gap-2">
                   <ImageIcon className="h-4 w-4" />
                   Add Image Pipeline
