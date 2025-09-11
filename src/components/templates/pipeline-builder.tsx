@@ -427,7 +427,16 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                       onChange={(e) => updateInput(input.id, { name: e.target.value })}
                     />
                   </div>
-                  {input.type === "image" && (
+                  {input.type === "text" ? (
+                    <div className="space-y-2">
+                      <Label>Example Value</Label>
+                      <Input
+                        value={input.exampleValue || ""}
+                        onChange={(e) => updateInput(input.id, { exampleValue: e.target.value })}
+                        placeholder="Example to show users"
+                      />
+                    </div>
+                  ) : (
                     <div className="space-y-2">
                       <Label>Input Source</Label>
                       <Select
@@ -449,24 +458,14 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                 </div>
 
                 {input.type === "text" && (
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>Example Value</Label>
-                      <Input
-                        value={input.exampleValue || ""}
-                        onChange={(e) => updateInput(input.id, { exampleValue: e.target.value })}
-                        placeholder="Example to show users"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Description</Label>
-                      <Textarea
-                        value={input.description || ""}
-                        onChange={(e) => updateInput(input.id, { description: e.target.value })}
-                        placeholder="Describe what this input is for..."
-                        rows={2}
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label>Description</Label>
+                    <Textarea
+                      value={input.description || ""}
+                      onChange={(e) => updateInput(input.id, { description: e.target.value })}
+                      placeholder="Describe what this input is for..."
+                      rows={2}
+                    />
                   </div>
                 )}
 
