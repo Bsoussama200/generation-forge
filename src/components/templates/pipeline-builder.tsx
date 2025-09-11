@@ -30,7 +30,8 @@ import {
   Type, 
   Upload,
   HelpCircle,
-  Sparkles
+  Sparkles,
+  Play
 } from "lucide-react";
 
 export interface Pipeline {
@@ -66,6 +67,10 @@ interface PipelineBuilderProps {
 export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilderProps) {
   const [editingPipeline, setEditingPipeline] = useState<Pipeline | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [runningPipeline, setRunningPipeline] = useState<Pipeline | null>(null);
+  const [isRunDialogOpen, setIsRunDialogOpen] = useState(false);
+  const [runResult, setRunResult] = useState<string | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
 
   const addPipeline = (type: "image" | "video") => {
     if (pipelines.length >= 10) return;
@@ -96,6 +101,21 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
     );
     setEditingPipeline(null);
     setIsDialogOpen(false);
+  };
+
+  const runPipeline = async (pipeline: Pipeline) => {
+    setRunningPipeline(pipeline);
+    setIsRunDialogOpen(true);
+    setIsRunning(true);
+    setRunResult(null);
+
+    // Simulate pipeline execution
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    // Static result for now
+    const staticImageUrl = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=512&h=512&fit=crop";
+    setRunResult(staticImageUrl);
+    setIsRunning(false);
   };
 
   const movePipeline = (fromIndex: number, toIndex: number) => {
@@ -185,6 +205,15 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
                     <Button
                       variant="outline"
                       size="sm"
+                      onClick={() => runPipeline(pipeline)}
+                      className="gap-1 text-green-600 hover:text-green-700 border-green-200 hover:border-green-300"
+                    >
+                      <Play className="h-3 w-3" />
+                      Run
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => editPipeline(pipeline)}
                       className="gap-1"
                     >
@@ -226,6 +255,54 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
               onCancel={() => setIsDialogOpen(false)}
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Pipeline Run Dialog */}
+      <Dialog open={isRunDialogOpen} onOpenChange={setIsRunDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Running {runningPipeline?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Testing pipeline execution
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            {isRunning ? (
+              <div className="text-center space-y-4">
+                <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto"></div>
+                <p className="text-sm text-muted-foreground">
+                  Processing {runningPipeline?.type} pipeline...
+                </p>
+              </div>
+            ) : runResult ? (
+              <div className="space-y-4">
+                <div className="text-center">
+                  <p className="text-sm font-medium text-green-600 mb-2">
+                    ✓ Pipeline completed successfully
+                  </p>
+                  <img 
+                    src={runResult} 
+                    alt="Pipeline output" 
+                    className="max-w-full max-h-64 mx-auto rounded-lg shadow-sm"
+                  />
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsRunDialogOpen(false)}
+              disabled={isRunning}
+            >
+              {isRunning ? "Running..." : "Close"}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
