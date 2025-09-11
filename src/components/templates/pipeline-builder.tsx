@@ -120,7 +120,6 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
             onClick={() => addPipeline("video")}
             disabled={pipelines.length >= 10}
             className="gap-2"
-            variant="outline"
           >
             <Video className="h-4 w-4" />
             Add Video Pipeline
@@ -145,7 +144,7 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
                   <ImageIcon className="h-4 w-4" />
                   Add Image Pipeline
                 </Button>
-                <Button onClick={() => addPipeline("video")} className="gap-2" variant="outline">
+                <Button onClick={() => addPipeline("video")} className="gap-2">
                   <Video className="h-4 w-4" />
                   Add Video Pipeline
                 </Button>
