@@ -359,7 +359,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
       </div>
 
       {/* Prompt Section - Always visible */}
-      <div className="space-y-2">
+      <div className="space-y-2 w-full">
         <Label htmlFor="pipeline-prompt">Prompt Template *</Label>
         <Textarea
           id="pipeline-prompt"
@@ -370,7 +370,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
           })}
           placeholder={`Describe how to generate ${editedPipeline.type} content...`}
           rows={4}
-          className="resize-none"
+          className="resize-none w-full"
         />
       </div>
       </div>
