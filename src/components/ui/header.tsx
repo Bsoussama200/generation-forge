@@ -49,9 +49,11 @@ export function Header({ className }: HeaderProps) {
           <Button variant="ghost" className="text-sm font-medium">
             My Templates
           </Button>
-          <Button variant="outline" className="space-x-2">
-            <Plus className="h-4 w-4" />
-            <span>Create</span>
+          <Button variant="outline" className="space-x-2" asChild>
+            <a href="/create">
+              <Plus className="h-4 w-4" />
+              <span>Create</span>
+            </a>
           </Button>
         </nav>
 
