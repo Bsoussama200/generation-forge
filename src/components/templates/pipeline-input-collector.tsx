@@ -209,10 +209,12 @@ export function PipelineInputCollector({
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* Main User Inputs */}
-          {userInputs.length > 0 && (
+          {/* All Pipeline Inputs Combined */}
+          {(userInputs.length > 0 || nestedUserInputs.length > 0) && (
             <div className="space-y-4">
               <h4 className="font-medium text-sm">Pipeline Inputs</h4>
+              
+              {/* Main User Inputs */}
               {userInputs.map(input => (
                 <div key={input.id} className="space-y-2">
                   <Label htmlFor={input.id} className="flex items-center gap-2">
@@ -299,13 +301,8 @@ export function PipelineInputCollector({
                   )}
                 </div>
               ))}
-            </div>
-          )}
 
-          {/* Nested User Inputs from AI Generation */}
-          {nestedUserInputs.length > 0 && (
-            <div className="space-y-4">
-              <h4 className="font-medium text-sm">AI Generation Inputs</h4>
+              {/* Nested User Inputs from AI Generation */}
               {nestedUserInputs.map(({ parentInput, nestedInput }) => (
                 <div key={`${parentInput.id}-${nestedInput.id}`} className="space-y-2 p-3 bg-primary/5 rounded-lg border-l-4 border-primary/30">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
