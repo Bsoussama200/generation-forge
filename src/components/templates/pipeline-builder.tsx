@@ -375,6 +375,17 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
     });
   };
 
+  const handleNestedStaticImageUpload = (parentInputId: string, nestedInputId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        updateNestedInput(parentInputId, nestedInputId, { staticImageFile: e.target?.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const deleteNestedInput = (parentInputId: string, nestedInputId: string) => {
     setEditedPipeline({
       ...editedPipeline,
@@ -698,7 +709,43 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                                   )}
                                 </div>
 
-                                <div className="space-y-1">
+                                {nestedInput.type === "image" && nestedInput.inputSource === "static" && (
+                                  <div className="space-y-1 col-span-2">
+                                    <Label className="text-xs">Static Image</Label>
+                                    <div className="border-2 border-dashed border-border rounded-lg p-3 text-center">
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleNestedStaticImageUpload(input.id, nestedInput.id, e)}
+                                        className="hidden"
+                                        id={`nested-static-image-${nestedInput.id}`}
+                                      />
+                                      <label htmlFor={`nested-static-image-${nestedInput.id}`} className="cursor-pointer">
+                                        {nestedInput.staticImageFile ? (
+                                          <div className="space-y-1">
+                                            <img 
+                                              src={nestedInput.staticImageFile} 
+                                              alt="Static image preview" 
+                                              className="max-h-16 mx-auto rounded object-cover"
+                                            />
+                                            <p className="text-xs text-muted-foreground">
+                                              Click to change image
+                                            </p>
+                                          </div>
+                                        ) : (
+                                          <>
+                                            <Upload className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
+                                            <p className="text-xs text-muted-foreground">
+                                              Click to upload image
+                                            </p>
+                                          </>
+                                        )}
+                                      </label>
+                                    </div>
+                                  </div>
+                                )}
+
+                                <div className="space-y-1 col-span-2">
                                   <Label className="text-xs">Description</Label>
                                   <Textarea
                                     value={nestedInput.description || ""}
