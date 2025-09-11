@@ -541,16 +541,17 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
       {/* Prompt Section - Always visible */}
       <div className="space-y-2 w-full">
         <Label htmlFor="pipeline-prompt">Prompt Template *</Label>
-         <Textarea
-           id="pipeline-prompt"
-           value={editedPipeline.prompt}
-           onChange={(e) => setEditedPipeline({
-             ...editedPipeline,
-             prompt: e.target.value
-           })}
-           rows={4}
-           className="resize-none w-full min-w-0 max-w-none"
-         />
+        <Textarea
+          id="pipeline-prompt"
+          value={editedPipeline.prompt}
+          onChange={(e) => setEditedPipeline({
+            ...editedPipeline,
+            prompt: e.target.value
+          })}
+          placeholder={`Describe how to generate ${editedPipeline.type} content...`}
+          rows={4}
+          className="resize-none w-full min-w-0 max-w-none"
+        />
       </div>
       </div>
 
@@ -692,11 +693,12 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                      </div>
                     <div className="space-y-2">
                       <Label>Image Generation Prompt</Label>
-                       <Textarea
-                         value={input.imagePrompt || ""}
-                         onChange={(e) => updateInput(input.id, { imagePrompt: e.target.value })}
-                         rows={3}
-                       />
+                      <Textarea
+                        value={input.imagePrompt || ""}
+                        onChange={(e) => updateInput(input.id, { imagePrompt: e.target.value })}
+                        placeholder="Describe how to generate the image..."
+                        rows={3}
+                      />
                     </div>
                     
                     {/* Nested Inputs */}
