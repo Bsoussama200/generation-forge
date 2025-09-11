@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Upload, Type, Image as ImageIcon } from "lucide-react";
+import { Upload, Type, Image as ImageIcon, Eye } from "lucide-react";
 import { Pipeline, PipelineInput } from "./pipeline-builder";
 
 interface CollectedInput {
@@ -42,6 +42,7 @@ export function PipelineInputCollector({
   const [collectedInputs, setCollectedInputs] = useState<CollectedInput[]>([]);
   const [collectedNestedInputs, setCollectedNestedInputs] = useState<CollectedNestedInput[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [viewingGuideImage, setViewingGuideImage] = useState<string | null>(null);
 
   if (!pipeline) return null;
 
@@ -161,6 +162,7 @@ export function PipelineInputCollector({
     setCollectedInputs([]);
     setCollectedNestedInputs([]);
     setErrors({});
+    setViewingGuideImage(null);
   };
 
   const getInputValue = (inputId: string) => {
@@ -196,6 +198,7 @@ export function PipelineInputCollector({
   }
 
   return (
+    <>
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -285,6 +288,30 @@ export function PipelineInputCollector({
                     <span>For generating: {parentInput.name}</span>
                   </div>
                   
+                  {/* Show guide image if available */}
+                  {nestedInput.type === "image" && nestedInput.guideImage && (
+                    <div className="mb-2">
+                      <Label className="text-xs text-muted-foreground mb-1 block">Guide Image:</Label>
+                      <div 
+                        className="cursor-pointer border rounded-lg p-2 bg-background hover:bg-muted/50 transition-colors"
+                        onClick={() => setViewingGuideImage(nestedInput.guideImage!)}
+                      >
+                        <div className="flex items-center gap-2">
+                          <img 
+                            src={nestedInput.guideImage} 
+                            alt="Guide image" 
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                          <div className="flex-1">
+                            <p className="text-xs font-medium">Click to view guide image</p>
+                            <p className="text-xs text-muted-foreground">Reference for this input</p>
+                          </div>
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
                   <Label htmlFor={`${parentInput.id}-${nestedInput.id}`} className="flex items-center gap-2">
                     {nestedInput.type === "text" ? (
                       <Type className="h-4 w-4 text-primary" />
@@ -360,5 +387,34 @@ export function PipelineInputCollector({
         </div>
       </DialogContent>
     </Dialog>
+
+    {/* Guide Image Viewer Dialog */}
+    <Dialog open={!!viewingGuideImage} onOpenChange={() => setViewingGuideImage(null)}>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>Guide Image</DialogTitle>
+          <DialogDescription>
+            Reference image for input guidance
+          </DialogDescription>
+        </DialogHeader>
+        
+        {viewingGuideImage && (
+          <div className="flex justify-center p-4">
+            <img 
+              src={viewingGuideImage} 
+              alt="Guide image" 
+              className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-lg"
+            />
+          </div>
+        )}
+        
+        <div className="flex justify-end">
+          <Button variant="outline" onClick={() => setViewingGuideImage(null)}>
+            Close
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
