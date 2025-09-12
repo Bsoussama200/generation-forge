@@ -62,14 +62,14 @@ export default function Index() {
       {/* Navigation */}
       <nav className="relative z-10 p-6">
         <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="p-2 bg-gradient-primary rounded-lg cyber-glow">
               <Sparkles className="h-6 w-6 text-background" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               TemplateForge AI
             </span>
-          </div>
+          </Link>
           
           <div className="flex items-center gap-4">
             <Button variant="ghost" className="hover:bg-primary/10" asChild>
