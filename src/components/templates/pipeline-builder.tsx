@@ -225,7 +225,7 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
                       variant="outline"
                       size="sm"
                       onClick={() => initiatePipelineRun(pipeline)}
-                      className="gap-1 text-green-600 hover:text-green-700 border-green-200 hover:border-green-300"
+                      className="gap-1 neon-border hover:bg-primary/10"
                     >
                       <Play className="h-3 w-3" />
                       Run
@@ -308,7 +308,7 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
             ) : runResult ? (
               <div className="space-y-4">
                 <div className="text-center">
-                  <p className="text-sm font-medium text-green-600 mb-2">
+                  <p className="text-sm font-medium text-primary mb-2">
                     ✓ Pipeline completed successfully
                   </p>
                   <img 
@@ -615,7 +615,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
           <div className="flex gap-2">
             <Button
               onClick={() => addInput("text")}
-              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 h-11"
+              className="gap-2"
               size="lg"
             >
               <Type className="h-4 w-4" />
@@ -623,7 +623,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
             </Button>
             <Button
               onClick={() => addInput("image")}
-              className="gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 h-11"
+              className="gap-2"
               size="lg"
             >
               <ImageIcon className="h-4 w-4" />
@@ -761,7 +761,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                         <div className="flex gap-2">
                           <Button
                             onClick={() => addNestedInput(input.id, "text")}
-                            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 h-8 text-xs"
+                            className="gap-2"
                             size="sm"
                           >
                             <Type className="h-3 w-3" />
@@ -769,7 +769,7 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
                           </Button>
                           <Button
                             onClick={() => addNestedInput(input.id, "image")}
-                            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 h-8 text-xs"
+                            className="gap-2"
                             size="sm"
                           >
                             <ImageIcon className="h-3 w-3" />
