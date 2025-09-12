@@ -13,7 +13,7 @@ const mockTemplates = [
     category: ["Viral", "Entertainment"],
     tags: ["tiktok", "dance", "viral", "trending", "music"],
     tokenCost: 30,
-    thumbnail: "https://images.unsplash.com/photo-1574391884720-bbc5c2d6c1b8?w=400&h=225&fit=crop",
+    thumbnail: "https://images.unsplash.com/photo-1547153760-18fc86324498?w=400&h=225&fit=crop",
     creator: {
       name: "Viral Studios",
       avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face"
