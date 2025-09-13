@@ -1058,18 +1058,14 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                              <ImageIcon className="h-3 w-3" />
                              Add Image Input
                            </Button>
-                           {globalInputs.length > 0 && (
-                             <Select onValueChange={(globalInputId) => addGlobalNestedInput(input.id, globalInputId)}>
-                               <SelectTrigger asChild>
-                                 <Button
-                                   variant="outline"
-                                   className="gap-2"
-                                   size="sm"
-                                 >
-                                   <Sparkles className="h-3 w-3" />
-                                   Use Global Input
-                                 </Button>
-                               </SelectTrigger>
+                            {globalInputs.length > 0 && (
+                              <Select onValueChange={(globalInputId) => addGlobalNestedInput(input.id, globalInputId)}>
+                                <SelectTrigger className="gap-2 h-9 px-3">
+                                  <div className="flex items-center gap-2">
+                                    <Sparkles className="h-3 w-3" />
+                                    Use Global Input
+                                  </div>
+                                </SelectTrigger>
                                <SelectContent>
                                  {globalInputs.map((globalInput) => (
                                    <SelectItem key={globalInput.id} value={globalInput.id}>
