@@ -49,17 +49,17 @@ export function PipelineInputCollector({
 
   if (!pipeline) return null;
 
-  // Get all user inputs that need to be collected
+  // Get all user inputs that need to be collected (excluding global inputs that are handled separately)
   const userInputs = pipeline.inputs.filter(input => 
-    input.inputSource === "user" && !input.editWithAi
+    input.inputSource === "user" && !input.editWithAi && !input.isGlobalInput
   );
 
-  // Get all nested user inputs from "Generate with AI" inputs
+  // Get all nested user inputs from "Generate with AI" inputs (excluding global inputs)
   const nestedUserInputs: Array<{parentInput: PipelineInput, nestedInput: PipelineInput}> = [];
   pipeline.inputs.forEach(input => {
     if (input.editWithAi && input.nestedInputs) {
       input.nestedInputs.forEach(nestedInput => {
-        if (nestedInput.inputSource === "user") {
+        if (nestedInput.inputSource === "user" && !nestedInput.isGlobalInput) {
           nestedUserInputs.push({ parentInput: input, nestedInput });
         }
       });
@@ -259,10 +259,10 @@ export function PipelineInputCollector({
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* Global Inputs */}
-          {globalInputs.length > 0 && (
+          {/* All Required Inputs */}
+          {(globalInputs.length > 0 || userInputs.length > 0 || nestedUserInputs.length > 0) && (
             <div className="space-y-4">
-              <h4 className="font-medium text-sm">Global Inputs</h4>
+              <h4 className="font-medium text-sm">Required Inputs</h4>
               
               {globalInputs.map(input => (
                 <div key={input.id} className="space-y-2">
@@ -350,13 +350,6 @@ export function PipelineInputCollector({
                   )}
                 </div>
               ))}
-            </div>
-          )}
-
-          {/* All Pipeline Inputs Combined */}
-          {(userInputs.length > 0 || nestedUserInputs.length > 0) && (
-            <div className="space-y-4">
-              <h4 className="font-medium text-sm">Pipeline Inputs</h4>
               
               {/* Main User Inputs */}
               {userInputs.map(input => (
