@@ -154,14 +154,15 @@ export function PipelineBuilder({
   const runPipeline = async (
     pipeline: Pipeline, 
     collectedInputs: Array<{inputId: string, value: string | File, type: "text" | "image"}>,
-    collectedNestedInputs: Array<{parentInputId: string, nestedInputId: string, value: string | File, type: "text" | "image"}>
+    collectedNestedInputs: Array<{parentInputId: string, nestedInputId: string, value: string | File, type: "text" | "image"}>,
+    collectedGlobalInputs: Array<{inputId: string, value: string | File, type: "text" | "image"}> = []
   ) => {
     setIsRunDialogOpen(true);
     setIsRunning(true);
     setRunResult(null);
 
     // Log collected inputs for debugging
-    console.log("Running pipeline with inputs:", { collectedInputs, collectedNestedInputs });
+    console.log("Running pipeline with inputs:", { collectedInputs, collectedNestedInputs, collectedGlobalInputs });
 
     // Simulate pipeline execution
     await new Promise(resolve => setTimeout(resolve, 3000));
@@ -487,9 +488,10 @@ export function PipelineBuilder({
       {/* Pipeline Input Collector */}
       <PipelineInputCollector
         pipeline={runningPipeline}
+        globalInputs={globalInputs}
         isOpen={isInputCollectorOpen}
         onClose={() => setIsInputCollectorOpen(false)}
-        onRun={(inputs, nestedInputs) => runPipeline(runningPipeline!, inputs, nestedInputs)}
+        onRun={(inputs, nestedInputs, globalInputs) => runPipeline(runningPipeline!, inputs, nestedInputs, globalInputs)}
       />
 
       {/* Pipeline Run Dialog */}

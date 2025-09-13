@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Upload, Type, Image as ImageIcon, Eye } from "lucide-react";
-import { Pipeline, PipelineInput } from "./pipeline-builder";
+import { Pipeline, PipelineInput, GlobalInput } from "./pipeline-builder";
 
 interface CollectedInput {
   inputId: string;
@@ -28,19 +28,22 @@ interface CollectedNestedInput {
 
 interface PipelineInputCollectorProps {
   pipeline: Pipeline | null;
+  globalInputs: GlobalInput[];
   isOpen: boolean;
   onClose: () => void;
-  onRun: (inputs: CollectedInput[], nestedInputs: CollectedNestedInput[]) => void;
+  onRun: (inputs: CollectedInput[], nestedInputs: CollectedNestedInput[], globalInputs: CollectedInput[]) => void;
 }
 
 export function PipelineInputCollector({ 
   pipeline, 
+  globalInputs,
   isOpen, 
   onClose, 
   onRun 
 }: PipelineInputCollectorProps) {
   const [collectedInputs, setCollectedInputs] = useState<CollectedInput[]>([]);
   const [collectedNestedInputs, setCollectedNestedInputs] = useState<CollectedNestedInput[]>([]);
+  const [collectedGlobalInputs, setCollectedGlobalInputs] = useState<CollectedInput[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [viewingGuideImage, setViewingGuideImage] = useState<string | null>(null);
 
@@ -120,8 +123,38 @@ export function PipelineInputCollector({
     }
   };
 
+  const updateGlobalInput = (inputId: string, value: string | File, type: "text" | "image") => {
+    setCollectedGlobalInputs(prev => {
+      const existing = prev.find(item => item.inputId === inputId);
+      if (existing) {
+        return prev.map(item => 
+          item.inputId === inputId ? { ...item, value } : item
+        );
+      }
+      return [...prev, { inputId, value, type }];
+    });
+
+    // Clear error when user provides input
+    const errorKey = `global-${inputId}`;
+    if (errors[errorKey]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[errorKey];
+        return newErrors;
+      });
+    }
+  };
+
   const validateInputs = () => {
     const newErrors: Record<string, string> = {};
+
+    // Validate global inputs
+    globalInputs.forEach(input => {
+      const collected = collectedGlobalInputs.find(item => item.inputId === input.id);
+      if (!collected || (typeof collected.value === "string" && !collected.value.trim())) {
+        newErrors[`global-${input.id}`] = `${input.name} is required`;
+      }
+    });
 
     // Validate main user inputs
     userInputs.forEach(input => {
@@ -147,11 +180,12 @@ export function PipelineInputCollector({
 
   const handleRun = () => {
     if (validateInputs()) {
-      onRun(collectedInputs, collectedNestedInputs);
+      onRun(collectedInputs, collectedNestedInputs, collectedGlobalInputs);
       onClose();
       // Reset form
       setCollectedInputs([]);
       setCollectedNestedInputs([]);
+      setCollectedGlobalInputs([]);
       setErrors({});
     }
   };
@@ -161,6 +195,7 @@ export function PipelineInputCollector({
     // Reset form
     setCollectedInputs([]);
     setCollectedNestedInputs([]);
+    setCollectedGlobalInputs([]);
     setErrors({});
     setViewingGuideImage(null);
   };
@@ -177,8 +212,16 @@ export function PipelineInputCollector({
     return collected && typeof collected.value === "string" ? collected.value : "";
   };
 
-  const getImageFileName = (inputId: string, isNested = false, parentInputId?: string) => {
-    if (isNested && parentInputId) {
+  const getGlobalInputValue = (inputId: string) => {
+    const collected = collectedGlobalInputs.find(item => item.inputId === inputId);
+    return collected && typeof collected.value === "string" ? collected.value : "";
+  };
+
+  const getImageFileName = (inputId: string, isNested = false, parentInputId?: string, isGlobal = false) => {
+    if (isGlobal) {
+      const collected = collectedGlobalInputs.find(item => item.inputId === inputId);
+      return collected && collected.value instanceof File ? collected.value.name : null;
+    } else if (isNested && parentInputId) {
       const collected = collectedNestedInputs.find(item => 
         item.parentInputId === parentInputId && item.nestedInputId === inputId
       );
@@ -189,8 +232,15 @@ export function PipelineInputCollector({
     }
   };
 
+  const handleGlobalImageUpload = (inputId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      updateGlobalInput(inputId, file, "image");
+    }
+  };
+
   // Check if there are any inputs to collect
-  const hasInputsToCollect = userInputs.length > 0 || nestedUserInputs.length > 0;
+  const hasInputsToCollect = globalInputs.length > 0 || userInputs.length > 0 || nestedUserInputs.length > 0;
 
   if (!hasInputsToCollect) {
     // Auto-run if no inputs needed
@@ -209,6 +259,100 @@ export function PipelineInputCollector({
         </DialogHeader>
 
         <div className="space-y-6 py-4">
+          {/* Global Inputs */}
+          {globalInputs.length > 0 && (
+            <div className="space-y-4">
+              <h4 className="font-medium text-sm">Global Inputs</h4>
+              
+              {globalInputs.map(input => (
+                <div key={input.id} className="space-y-2">
+                  <Label htmlFor={input.id} className="flex items-center gap-2">
+                    {input.type === "text" ? (
+                      <Type className="h-4 w-4 text-primary" />
+                    ) : (
+                      <ImageIcon className="h-4 w-4 text-primary" />
+                    )}
+                    {input.name}
+                    <span className="text-destructive">*</span>
+                  </Label>
+                  
+                  {input.description && (
+                    <p className="text-xs text-muted-foreground">{input.description}</p>
+                  )}
+
+                  {/* Show guide image if available for image inputs */}
+                  {input.type === "image" && input.guideImage && (
+                    <div className="mb-2">
+                      <Label className="text-xs text-muted-foreground mb-1 block">Guide Image:</Label>
+                      <div 
+                        className="cursor-pointer border rounded-lg p-2 bg-background hover:bg-muted/50 transition-colors"
+                        onClick={() => setViewingGuideImage(input.guideImage!)}
+                      >
+                        <div className="flex items-center gap-2">
+                          <img 
+                            src={input.guideImage} 
+                            alt="Guide image" 
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                          <div className="flex-1">
+                            <p className="text-xs font-medium">Click to view guide image</p>
+                            <p className="text-xs text-muted-foreground">Reference for this input</p>
+                          </div>
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {input.type === "text" ? (
+                    <Textarea
+                      id={input.id}
+                      value={getGlobalInputValue(input.id)}
+                      onChange={(e) => updateGlobalInput(input.id, e.target.value, "text")}
+                      placeholder={input.placeholder || input.exampleValue || `Enter ${input.name.toLowerCase()}...`}
+                      rows={3}
+                      className={errors[`global-${input.id}`] ? "border-destructive" : ""}
+                    />
+                  ) : (
+                    <div className="border-2 border-dashed border-border rounded-lg p-4 text-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleGlobalImageUpload(input.id, e)}
+                        className="hidden"
+                        id={`global-image-${input.id}`}
+                      />
+                      <label htmlFor={`global-image-${input.id}`} className="cursor-pointer">
+                        {getImageFileName(input.id, false, undefined, true) ? (
+                          <div className="space-y-2">
+                            <ImageIcon className="h-8 w-8 mx-auto text-green-600" />
+                            <p className="text-sm font-medium text-green-600">
+                              {getImageFileName(input.id, false, undefined, true)}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Click to change image
+                            </p>
+                          </div>
+                        ) : (
+                          <>
+                            <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">
+                              Click to upload {input.name.toLowerCase()}
+                            </p>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  )}
+
+                  {errors[`global-${input.id}`] && (
+                    <p className="text-xs text-destructive">{errors[`global-${input.id}`]}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* All Pipeline Inputs Combined */}
           {(userInputs.length > 0 || nestedUserInputs.length > 0) && (
             <div className="space-y-4">
