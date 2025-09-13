@@ -50,6 +50,7 @@ export interface GlobalInput {
   placeholder?: string;
   description?: string;
   exampleValue?: string;
+  guideImage?: string;
 }
 
 export interface PipelineInput {
@@ -203,6 +204,18 @@ export function PipelineBuilder({
     onGlobalInputsChange(globalInputs.filter(input => input.id !== inputId));
   };
 
+  const handleGlobalGuideImageUpload = (inputId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      updateGlobalInput(inputId, { guideImage: dataUrl });
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="space-y-6">
       {/* Global Inputs Section */}
@@ -243,41 +256,98 @@ export function PipelineBuilder({
             <CardContent className="pt-0">
               <div className="space-y-3">
                 {globalInputs.map((input) => (
-                  <div key={input.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg border">
-                    <div className="flex items-center gap-2">
-                      {input.type === "text" ? (
-                        <Type className="h-4 w-4 text-primary" />
-                      ) : (
-                        <ImageIcon className="h-4 w-4 text-primary" />
-                      )}
-                      <Badge variant="secondary" className="text-xs">
-                        {input.type}
-                      </Badge>
+                  <div key={input.id} className="p-4 bg-background/50 rounded-lg border space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {input.type === "text" ? (
+                          <Type className="h-4 w-4 text-primary" />
+                        ) : (
+                          <ImageIcon className="h-4 w-4 text-primary" />
+                        )}
+                        <Badge variant="secondary" className="text-xs">
+                          {input.type}
+                        </Badge>
+                      </div>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => deleteGlobalInput(input.id)}
+                        className="gap-1 text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
                     </div>
                     
-                    <div className="flex-1 grid grid-cols-2 gap-2">
-                      <Input
-                        value={input.name}
-                        onChange={(e) => updateGlobalInput(input.id, { name: e.target.value })}
-                        placeholder="Input name"
-                        className="text-sm"
-                      />
-                      <Input
-                        value={input.description || ""}
-                        onChange={(e) => updateGlobalInput(input.id, { description: e.target.value })}
-                        placeholder="Description"
-                        className="text-sm"
-                      />
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label className="text-xs">Input Name</Label>
+                        <Input
+                          value={input.name}
+                          onChange={(e) => updateGlobalInput(input.id, { name: e.target.value })}
+                          placeholder="Input name"
+                          className="text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Description</Label>
+                        <Input
+                          value={input.description || ""}
+                          onChange={(e) => updateGlobalInput(input.id, { description: e.target.value })}
+                          placeholder="Description"
+                          className="text-sm"
+                        />
+                      </div>
                     </div>
                     
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => deleteGlobalInput(input.id)}
-                      className="gap-1 text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
+                    {input.type === "text" ? (
+                      <div className="space-y-1">
+                        <Label className="text-xs">Placeholder</Label>
+                        <Input
+                          value={input.placeholder || ""}
+                          onChange={(e) => updateGlobalInput(input.id, { placeholder: e.target.value })}
+                          placeholder="Placeholder text..."
+                          className="text-sm"
+                        />
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        <Label className="text-xs flex items-center gap-1">
+                          Guide Image
+                          <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                        </Label>
+                        <div className="border-2 border-dashed border-border rounded-lg p-3 text-center">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleGlobalGuideImageUpload(input.id, e)}
+                            className="hidden"
+                            id={`global-guide-image-${input.id}`}
+                          />
+                          <label htmlFor={`global-guide-image-${input.id}`} className="cursor-pointer">
+                            {input.guideImage ? (
+                              <div className="space-y-1">
+                                <img 
+                                  src={input.guideImage} 
+                                  alt="Global guide image preview" 
+                                  className="max-h-20 mx-auto rounded object-cover"
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                  Click to change guide image
+                                </p>
+                              </div>
+                            ) : (
+                              <>
+                                <Upload className="h-5 w-5 mx-auto mb-1 text-muted-foreground" />
+                                <p className="text-xs text-muted-foreground">
+                                  Upload guide image for users
+                                </p>
+                              </>
+                            )}
+                          </label>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
