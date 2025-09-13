@@ -20,6 +20,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { 
   Plus, 
   Edit, 
@@ -1129,29 +1135,35 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                              Add Image Input
                            </Button>
                             {globalInputs.length > 0 && (
-                              <Select onValueChange={(globalInputId) => addGlobalNestedInput(input.id, globalInputId)}>
-                                <SelectTrigger className="gap-2 h-9 px-3 bg-background border-input hover:bg-accent hover:text-accent-foreground">
-                                  <div className="flex items-center gap-2">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    size="sm"
+                                  >
                                     <Sparkles className="h-3 w-3" />
-                                    <span>Use Global Input</span>
-                                  </div>
-                                </SelectTrigger>
-                               <SelectContent>
-                                 {globalInputs.map((globalInput) => (
-                                   <SelectItem key={globalInput.id} value={globalInput.id}>
-                                     <div className="flex items-center gap-2">
-                                       {globalInput.type === "text" ? (
-                                         <Type className="h-3 w-3" />
-                                       ) : (
-                                         <ImageIcon className="h-3 w-3" />
-                                       )}
-                                       {globalInput.name}
-                                     </div>
-                                   </SelectItem>
-                                 ))}
-                               </SelectContent>
-                             </Select>
-                           )}
+                                    Use Global Input
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56 bg-background border shadow-lg">
+                                  {globalInputs.map((globalInput) => (
+                                    <DropdownMenuItem 
+                                      key={globalInput.id} 
+                                      onClick={() => addGlobalNestedInput(input.id, globalInput.id)}
+                                      className="flex items-center gap-2 cursor-pointer"
+                                    >
+                                      {globalInput.type === "text" ? (
+                                        <Type className="h-3 w-3" />
+                                      ) : (
+                                        <ImageIcon className="h-3 w-3" />
+                                      )}
+                                      {globalInput.name}
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            )}
                          </div>
                       </div>
 
