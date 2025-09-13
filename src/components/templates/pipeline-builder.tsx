@@ -400,6 +400,7 @@ export function PipelineBuilder({
               pipeline={editingPipeline}
               onSave={savePipeline}
               onCancel={() => setIsDialogOpen(false)}
+              globalInputs={globalInputs}
             />
           )}
         </DialogContent>
@@ -468,10 +469,12 @@ interface PipelineEditorProps {
   pipeline: Pipeline;
   onSave: (pipeline: Pipeline) => void;
   onCancel: () => void;
+  globalInputs?: GlobalInput[];
 }
 
-function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
+function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: PipelineEditorProps) {
   const [editedPipeline, setEditedPipeline] = useState<Pipeline>(pipeline);
+  const [showGlobalInputSelect, setShowGlobalInputSelect] = useState(false);
 
   const addInput = (type: "text" | "image") => {
     const newInput: PipelineInput = {
@@ -496,6 +499,34 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
       inputs: updatedInputs,
       prompt: updatedPrompt
     });
+  };
+
+  const addGlobalInputToPipeline = (globalInput: GlobalInput) => {
+    const newInput: PipelineInput = {
+      id: `input-${Date.now()}`,
+      name: globalInput.name,
+      type: globalInput.type,
+      inputSource: "user",
+      placeholder: globalInput.placeholder,
+      description: globalInput.description,
+      exampleValue: globalInput.exampleValue
+    };
+    
+    const updatedInputs = [...editedPipeline.inputs, newInput];
+    let updatedPrompt = editedPipeline.prompt;
+    
+    // Auto-add text inputs to prompt
+    if (globalInput.type === "text") {
+      updatedPrompt += ` {{${newInput.name}}}`;
+    }
+    
+    setEditedPipeline({
+      ...editedPipeline,
+      inputs: updatedInputs,
+      prompt: updatedPrompt
+    });
+    
+    setShowGlobalInputSelect(false);
   };
 
   const updateInput = (inputId: string, updates: Partial<PipelineInput>) => {
@@ -757,6 +788,54 @@ function PipelineEditor({ pipeline, onSave, onCancel }: PipelineEditorProps) {
               <ImageIcon className="h-4 w-4" />
               Add Image Input
             </Button>
+            {globalInputs.length > 0 && (
+              <div className="relative">
+                <Button
+                  onClick={() => setShowGlobalInputSelect(!showGlobalInputSelect)}
+                  variant="outline"
+                  className="gap-2"
+                  size="lg"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Use Global Input
+                </Button>
+                
+                {showGlobalInputSelect && (
+                  <Card className="absolute top-full mt-2 right-0 z-10 min-w-64 bg-background border shadow-lg">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm">Select Global Input</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {globalInputs.map((globalInput) => (
+                        <Button
+                          key={globalInput.id}
+                          variant="ghost"
+                          className="w-full justify-start gap-2 text-left"
+                          onClick={() => addGlobalInputToPipeline(globalInput)}
+                        >
+                          {globalInput.type === "text" ? (
+                            <Type className="h-4 w-4" />
+                          ) : (
+                            <ImageIcon className="h-4 w-4" />
+                          )}
+                          <div className="flex-1">
+                            <div className="font-medium">{globalInput.name}</div>
+                            {globalInput.description && (
+                              <div className="text-xs text-muted-foreground">
+                                {globalInput.description}
+                              </div>
+                            )}
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {globalInput.type}
+                          </Badge>
+                        </Button>
+                      ))}
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
