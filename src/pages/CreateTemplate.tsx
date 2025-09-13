@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Header } from "@/components/ui/header";
-import { PipelineBuilder, type Pipeline } from "@/components/templates/pipeline-builder";
+import { PipelineBuilder, type Pipeline, type GlobalInput } from "@/components/templates/pipeline-builder";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,7 @@ export default function CreateTemplate() {
   const [tokenCost, setTokenCost] = useState(20);
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
+  const [globalInputs, setGlobalInputs] = useState<GlobalInput[]>([]);
 
   const handleCategoryToggle = (category: string) => {
     setSelectedCategories(prev => 
@@ -248,6 +249,8 @@ export default function CreateTemplate() {
                 <PipelineBuilder
                   pipelines={pipelines}
                   onPipelinesChange={setPipelines}
+                  globalInputs={globalInputs}
+                  onGlobalInputsChange={setGlobalInputs}
                 />
               </CardContent>
             </Card>

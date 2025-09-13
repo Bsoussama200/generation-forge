@@ -43,6 +43,15 @@ export interface Pipeline {
   inputs: PipelineInput[];
 }
 
+export interface GlobalInput {
+  id: string;
+  name: string;
+  type: "text" | "image";
+  placeholder?: string;
+  description?: string;
+  exampleValue?: string;
+}
+
 export interface PipelineInput {
   id: string;
   name: string;
@@ -63,9 +72,16 @@ export interface PipelineInput {
 interface PipelineBuilderProps {
   pipelines: Pipeline[];
   onPipelinesChange: (pipelines: Pipeline[]) => void;
+  globalInputs?: GlobalInput[];
+  onGlobalInputsChange?: (globalInputs: GlobalInput[]) => void;
 }
 
-export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilderProps) {
+export function PipelineBuilder({ 
+  pipelines, 
+  onPipelinesChange, 
+  globalInputs = [], 
+  onGlobalInputsChange 
+}: PipelineBuilderProps) {
   const [editingPipeline, setEditingPipeline] = useState<Pipeline | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [runningPipeline, setRunningPipeline] = useState<Pipeline | null>(null);
@@ -154,9 +170,121 @@ export function PipelineBuilder({ pipelines, onPipelinesChange }: PipelineBuilde
     onPipelinesChange(updated);
   };
 
+  const addGlobalInput = (type: "text" | "image") => {
+    if (!onGlobalInputsChange) return;
+    
+    const newGlobalInput: GlobalInput = {
+      id: `global-input-${Date.now()}`,
+      name: `Global ${type} Input ${globalInputs.length + 1}`,
+      type,
+      placeholder: type === "text" ? "Enter text..." : undefined,
+      exampleValue: type === "text" ? "Example text" : undefined,
+      description: `A global ${type} input that can be used across all pipelines`
+    };
+    
+    onGlobalInputsChange([...globalInputs, newGlobalInput]);
+  };
+
+  const updateGlobalInput = (inputId: string, updates: Partial<GlobalInput>) => {
+    if (!onGlobalInputsChange) return;
+    
+    onGlobalInputsChange(
+      globalInputs.map(input => 
+        input.id === inputId ? { ...input, ...updates } : input
+      )
+    );
+  };
+
+  const deleteGlobalInput = (inputId: string) => {
+    if (!onGlobalInputsChange) return;
+    
+    onGlobalInputsChange(globalInputs.filter(input => input.id !== inputId));
+  };
+
   return (
-    <div className="space-y-4">
-      {/* Header */}
+    <div className="space-y-6">
+      {/* Global Inputs Section */}
+      {onGlobalInputsChange && (
+        <Card className="bg-gradient-card">
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-base">Global Inputs</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Inputs that can be used across all pipelines
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => addGlobalInput("text")}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Type className="h-4 w-4" />
+                  Add Text Input
+                </Button>
+                <Button 
+                  onClick={() => addGlobalInput("image")}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <ImageIcon className="h-4 w-4" />
+                  Add Image Input
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          
+          {globalInputs.length > 0 && (
+            <CardContent className="pt-0">
+              <div className="space-y-3">
+                {globalInputs.map((input) => (
+                  <div key={input.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg border">
+                    <div className="flex items-center gap-2">
+                      {input.type === "text" ? (
+                        <Type className="h-4 w-4 text-primary" />
+                      ) : (
+                        <ImageIcon className="h-4 w-4 text-primary" />
+                      )}
+                      <Badge variant="secondary" className="text-xs">
+                        {input.type}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex-1 grid grid-cols-2 gap-2">
+                      <Input
+                        value={input.name}
+                        onChange={(e) => updateGlobalInput(input.id, { name: e.target.value })}
+                        placeholder="Input name"
+                        className="text-sm"
+                      />
+                      <Input
+                        value={input.description || ""}
+                        onChange={(e) => updateGlobalInput(input.id, { description: e.target.value })}
+                        placeholder="Description"
+                        className="text-sm"
+                      />
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => deleteGlobalInput(input.id)}
+                      className="gap-1 text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      )}
+
+      {/* Pipelines Header */}
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">Pipelines ({pipelines.length}/10)</h3>
