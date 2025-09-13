@@ -67,6 +67,8 @@ export interface PipelineInput {
   editWithAi?: boolean;
   imagePrompt?: string;
   nestedInputs?: PipelineInput[];
+  isGlobalInput?: boolean;
+  globalInputId?: string;
 }
 
 interface PipelineBuilderProps {
@@ -509,7 +511,9 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
       inputSource: "user",
       placeholder: globalInput.placeholder,
       description: globalInput.description,
-      exampleValue: globalInput.exampleValue
+      exampleValue: globalInput.exampleValue,
+      isGlobalInput: true,
+      globalInputId: globalInput.id
     };
     
     const updatedInputs = [...editedPipeline.inputs, newInput];
@@ -852,7 +856,12 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                       <ImageIcon className="h-6 w-6 text-primary" />
                     )}
                     <Badge variant="secondary">{input.type}</Badge>
-                    {input.editWithAi ? (
+                    {input.isGlobalInput ? (
+                      <Badge variant="default" className="gap-1">
+                        <Sparkles className="h-3 w-3" />
+                        Global
+                      </Badge>
+                    ) : input.editWithAi ? (
                       <Badge variant="default" className="gap-1">
                         <Sparkles className="h-3 w-3" />
                         AI
@@ -873,6 +882,34 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                   </Button>
                 </div>
 
+                {input.isGlobalInput ? (
+                  // Read-only display for global inputs
+                  <div className="bg-muted/50 rounded-lg p-4 border border-dashed">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Label className="text-muted-foreground">Global Input:</Label>
+                        <span className="font-medium">{input.name}</span>
+                      </div>
+                      {input.description && (
+                        <div className="flex items-start gap-2">
+                          <Label className="text-muted-foreground">Description:</Label>
+                          <span className="text-sm">{input.description}</span>
+                        </div>
+                      )}
+                      {input.placeholder && (
+                        <div className="flex items-center gap-2">
+                          <Label className="text-muted-foreground">Placeholder:</Label>
+                          <span className="text-sm text-muted-foreground">{input.placeholder}</span>
+                        </div>
+                      )}
+                      <p className="text-xs text-muted-foreground mt-2">
+                        This is a global input and cannot be edited here. Modify it in the Global Inputs section above.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  // Editable fields for regular inputs
+                  <>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Input Name</Label>
@@ -1247,6 +1284,8 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                       </label>
                     </div>
                   </div>
+                )}
+                  </>
                 )}
               </div>
             </Card>
