@@ -1130,10 +1130,10 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                            </Button>
                             {globalInputs.length > 0 && (
                               <Select onValueChange={(globalInputId) => addGlobalNestedInput(input.id, globalInputId)}>
-                                <SelectTrigger className="gap-2 h-9 px-3">
+                                <SelectTrigger className="gap-2 h-9 px-3 bg-background border-input hover:bg-accent hover:text-accent-foreground">
                                   <div className="flex items-center gap-2">
                                     <Sparkles className="h-3 w-3" />
-                                    Use Global Input
+                                    <span>Use Global Input</span>
                                   </div>
                                 </SelectTrigger>
                                <SelectContent>
