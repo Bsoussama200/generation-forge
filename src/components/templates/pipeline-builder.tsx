@@ -302,11 +302,11 @@ export function PipelineBuilder({
                     
                     {input.type === "text" ? (
                       <div className="space-y-1">
-                        <Label className="text-xs">Placeholder</Label>
+                        <Label className="text-xs">Example Value</Label>
                         <Input
-                          value={input.placeholder || ""}
-                          onChange={(e) => updateGlobalInput(input.id, { placeholder: e.target.value })}
-                          placeholder="Placeholder text..."
+                          value={input.exampleValue || ""}
+                          onChange={(e) => updateGlobalInput(input.id, { exampleValue: e.target.value })}
+                          placeholder="Example text..."
                           className="text-sm"
                         />
                       </div>
