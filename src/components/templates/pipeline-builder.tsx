@@ -240,19 +240,12 @@ export function PipelineBuilder({
               <CardHeader className="pb-4 cursor-pointer hover:bg-muted/5 transition-colors">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="flex items-center gap-2">
-                      <CardTitle className="text-base">Global Inputs</CardTitle>
-                      <ChevronDown 
-                        className={`h-4 w-4 transition-transform duration-200 ${
-                          isGlobalInputsCollapsed ? 'rotate-0' : 'rotate-180'
-                        }`} 
-                      />
-                    </div>
+                    <CardTitle className="text-base">Global Inputs</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       Inputs that can be used across all pipelines
                     </p>
                   </div>
-                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                     <Button 
                       onClick={() => addGlobalInput("text")}
                       variant="outline"
@@ -271,6 +264,11 @@ export function PipelineBuilder({
                       <ImageIcon className="h-4 w-4" />
                       Add Image Input
                     </Button>
+                    <ChevronDown 
+                      className={`h-4 w-4 transition-transform duration-200 text-muted-foreground ml-2 ${
+                        isGlobalInputsCollapsed ? 'rotate-0' : 'rotate-180'
+                      }`} 
+                    />
                   </div>
                 </div>
               </CardHeader>
