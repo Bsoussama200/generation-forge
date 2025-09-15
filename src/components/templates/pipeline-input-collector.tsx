@@ -10,7 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Upload, Type, Image as ImageIcon, Eye } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Upload, Type, Image as ImageIcon, Eye, ChevronDown } from "lucide-react";
 import { Pipeline, PipelineInput, GlobalInput } from "./pipeline-builder";
 
 interface CollectedInput {
@@ -46,6 +47,7 @@ export function PipelineInputCollector({
   const [collectedGlobalInputs, setCollectedGlobalInputs] = useState<CollectedInput[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [viewingGuideImage, setViewingGuideImage] = useState<string | null>(null);
+  const [isInputsExpanded, setIsInputsExpanded] = useState(true);
 
   if (!pipeline) return null;
 
@@ -261,8 +263,14 @@ export function PipelineInputCollector({
         <div className="space-y-6 py-4">
           {/* All Required Inputs */}
           {(globalInputs.length > 0 || userInputs.length > 0 || nestedUserInputs.length > 0) && (
-            <div className="space-y-4">
-              <h4 className="font-medium text-sm">Required Inputs</h4>
+            <Collapsible open={isInputsExpanded} onOpenChange={setIsInputsExpanded}>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                  <h4 className="font-medium text-sm">Required Inputs</h4>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isInputsExpanded ? 'transform rotate-180' : ''}`} />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-4 mt-4">
               
               {globalInputs.map(input => (
                 <div key={input.id} className="space-y-2">
@@ -530,7 +538,8 @@ export function PipelineInputCollector({
                   )}
                 </div>
               ))}
-            </div>
+              </CollapsibleContent>
+            </Collapsible>
           )}
         </div>
 
