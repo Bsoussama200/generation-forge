@@ -236,16 +236,18 @@ export function PipelineBuilder({
       {onGlobalInputsChange && (
         <Collapsible open={!isGlobalInputsCollapsed} onOpenChange={(open) => setIsGlobalInputsCollapsed(!open)}>
           <Card className="bg-gradient-card">
-            <CollapsibleTrigger asChild>
-              <CardHeader className="pb-4 cursor-pointer hover:bg-muted/5 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div>
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <CollapsibleTrigger asChild>
+                  <div className="cursor-pointer hover:bg-muted/5 transition-colors rounded p-1 -m-1">
                     <CardTitle className="text-base">Global Inputs</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       Inputs that can be used across all pipelines
                     </p>
                   </div>
-                  <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                </CollapsibleTrigger>
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                     <Button 
                       onClick={() => addGlobalInput("text")}
                       variant="outline"
@@ -264,15 +266,19 @@ export function PipelineBuilder({
                       <ImageIcon className="h-4 w-4" />
                       Add Image Input
                     </Button>
-                    <ChevronDown 
-                      className={`h-4 w-4 transition-transform duration-200 text-muted-foreground ml-2 ${
-                        isGlobalInputsCollapsed ? 'rotate-0' : 'rotate-180'
-                      }`} 
-                    />
                   </div>
+                  <CollapsibleTrigger asChild>
+                    <button className="p-1 hover:bg-muted/20 rounded transition-colors">
+                      <ChevronDown 
+                        className={`h-4 w-4 transition-transform duration-200 text-muted-foreground ${
+                          isGlobalInputsCollapsed ? 'rotate-0' : 'rotate-180'
+                        }`} 
+                      />
+                    </button>
+                  </CollapsibleTrigger>
                 </div>
-              </CardHeader>
-            </CollapsibleTrigger>
+              </div>
+            </CardHeader>
             
             <CollapsibleContent>
               {globalInputs.length > 0 && (
