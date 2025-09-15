@@ -283,7 +283,7 @@ export function PipelineBuilder({
             </CardHeader>
             
             <CollapsibleContent>
-              {globalInputs.length > 0 && (
+              {globalInputs.length > 0 ? (
                 <CardContent className="pt-0">
                   <div className="space-y-3">
                     {globalInputs.map((input) => (
@@ -381,6 +381,12 @@ export function PipelineBuilder({
                         )}
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              ) : (
+                <CardContent className="pt-0 pb-6">
+                  <div className="text-center py-6 text-muted-foreground">
+                    <p className="text-sm">No global inputs yet. Add text or image inputs to share across all pipelines.</p>
                   </div>
                 </CardContent>
               )}
