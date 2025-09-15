@@ -215,7 +215,24 @@ export function PipelineBuilder({
   const deleteGlobalInput = (inputId: string) => {
     if (!onGlobalInputsChange) return;
     
+    // Remove the global input
     onGlobalInputsChange(globalInputs.filter(input => input.id !== inputId));
+    
+    // Remove any pipeline inputs that reference this global input
+    const updatedPipelines = pipelines.map(pipeline => ({
+      ...pipeline,
+      inputs: pipeline.inputs.filter(input => 
+        !(input.isGlobalInput && input.globalInputId === inputId)
+      ).map(input => ({
+        ...input,
+        // Also clean up nested inputs that might reference the global input
+        nestedInputs: input.nestedInputs?.filter(nestedInput => 
+          !(nestedInput.isGlobalInput && nestedInput.globalInputId === inputId)
+        )
+      }))
+    }));
+    
+    onPipelinesChange(updatedPipelines);
   };
 
   const handleGlobalGuideImageUpload = (inputId: string, e: React.ChangeEvent<HTMLInputElement>) => {
