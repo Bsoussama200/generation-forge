@@ -26,6 +26,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { 
   Plus, 
   Edit, 
@@ -37,7 +42,8 @@ import {
   Upload,
   HelpCircle,
   Sparkles,
-  Play
+  Play,
+  ChevronDown
 } from "lucide-react";
 import { PipelineInputCollector } from "./pipeline-input-collector";
 
@@ -98,6 +104,7 @@ export function PipelineBuilder({
   const [isRunDialogOpen, setIsRunDialogOpen] = useState(false);
   const [runResult, setRunResult] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isGlobalInputsCollapsed, setIsGlobalInputsCollapsed] = useState(true);
 
   const addPipeline = (type: "image" | "video") => {
     if (pipelines.length >= 10) return;
@@ -228,15 +235,22 @@ export function PipelineBuilder({
       {/* Global Inputs Section */}
       {onGlobalInputsChange && (
         <Card className="bg-gradient-card">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-base">Global Inputs</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Inputs that can be used across all pipelines
-                </p>
-              </div>
-              <div className="flex gap-2">
+          <Collapsible open={!isGlobalInputsCollapsed} onOpenChange={() => setIsGlobalInputsCollapsed(!isGlobalInputsCollapsed)}>
+            <CardHeader className="pb-4">
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center justify-between cursor-pointer hover:bg-muted/30 rounded-lg p-2 -m-2 transition-colors">
+                  <div>
+                    <CardTitle className="text-base">Global Inputs</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Inputs that can be used across all pipelines
+                    </p>
+                  </div>
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isGlobalInputsCollapsed ? '' : 'rotate-180'}`} />
+                </div>
+              </CollapsibleTrigger>
+              
+              <CollapsibleContent className="pt-4">
+                <div className="flex gap-2">
                 <Button 
                   onClick={() => addGlobalInput("text")}
                   variant="outline"
@@ -255,10 +269,11 @@ export function PipelineBuilder({
                   <ImageIcon className="h-4 w-4" />
                   Add Image Input
                 </Button>
-              </div>
-            </div>
-          </CardHeader>
-          
+                </div>
+              </CollapsibleContent>
+            </CardHeader>
+            
+            <CollapsibleContent>
           {globalInputs.length > 0 && (
             <CardContent className="pt-0">
               <div className="space-y-3">
