@@ -51,7 +51,7 @@ export function PipelineInputCollector({
   const [collectedGlobalInputs, setCollectedGlobalInputs] = useState<CollectedInput[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [viewingGuideImage, setViewingGuideImage] = useState<string | null>(null);
-  const [isInputsCollapsed, setIsInputsCollapsed] = useState(false);
+  const [isInputsCollapsed, setIsInputsCollapsed] = useState(true);
 
   if (!pipeline) return null;
 
@@ -269,9 +269,9 @@ export function PipelineInputCollector({
           {(globalInputs.length > 0 || userInputs.length > 0 || nestedUserInputs.length > 0) && (
             <Collapsible open={!isInputsCollapsed} onOpenChange={() => setIsInputsCollapsed(!isInputsCollapsed)}>
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" className="w-full justify-between p-0 h-auto">
+                <Button variant="ghost" className="w-full justify-between p-2 h-auto hover:bg-muted/50 transition-colors">
                   <h4 className="font-medium text-sm">Required Inputs</h4>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${isInputsCollapsed ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isInputsCollapsed ? '' : 'rotate-180'}`} />
                 </Button>
               </CollapsibleTrigger>
               
