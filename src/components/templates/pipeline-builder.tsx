@@ -26,6 +26,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { 
   Plus, 
   Edit, 
@@ -37,7 +42,8 @@ import {
   Upload,
   HelpCircle,
   Sparkles,
-  Play
+  Play,
+  ChevronDown
 } from "lucide-react";
 import { PipelineInputCollector } from "./pipeline-input-collector";
 
@@ -98,6 +104,7 @@ export function PipelineBuilder({
   const [isRunDialogOpen, setIsRunDialogOpen] = useState(false);
   const [runResult, setRunResult] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isGlobalInputsCollapsed, setIsGlobalInputsCollapsed] = useState(true);
 
   const addPipeline = (type: "image" | "video") => {
     if (pipelines.length >= 10) return;
@@ -227,140 +234,153 @@ export function PipelineBuilder({
     <div className="space-y-6">
       {/* Global Inputs Section */}
       {onGlobalInputsChange && (
-        <Card className="bg-gradient-card">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-base">Global Inputs</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Inputs that can be used across all pipelines
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => addGlobalInput("text")}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                >
-                  <Type className="h-4 w-4" />
-                  Add Text Input
-                </Button>
-                <Button 
-                  onClick={() => addGlobalInput("image")}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                >
-                  <ImageIcon className="h-4 w-4" />
-                  Add Image Input
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-          
-          {globalInputs.length > 0 && (
-            <CardContent className="pt-0">
-              <div className="space-y-3">
-                {globalInputs.map((input) => (
-                  <div key={input.id} className="p-4 bg-background/50 rounded-lg border space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {input.type === "text" ? (
-                          <Type className="h-4 w-4 text-primary" />
-                        ) : (
-                          <ImageIcon className="h-4 w-4 text-primary" />
-                        )}
-                        <Badge variant="secondary" className="text-xs">
-                          {input.type}
-                        </Badge>
-                      </div>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => deleteGlobalInput(input.id)}
-                        className="gap-1 text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+        <Collapsible open={!isGlobalInputsCollapsed} onOpenChange={(open) => setIsGlobalInputsCollapsed(!open)}>
+          <Card className="bg-gradient-card">
+            <CollapsibleTrigger asChild>
+              <CardHeader className="pb-4 cursor-pointer hover:bg-muted/5 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-base">Global Inputs</CardTitle>
+                      <ChevronDown 
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          isGlobalInputsCollapsed ? 'rotate-0' : 'rotate-180'
+                        }`} 
+                      />
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="space-y-1">
-                        <Label className="text-xs">Input Name</Label>
-                        <Input
-                          value={input.name}
-                          onChange={(e) => updateGlobalInput(input.id, { name: e.target.value })}
-                          placeholder="Input name"
-                          className="text-sm"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <Label className="text-xs">Description</Label>
-                        <Input
-                          value={input.description || ""}
-                          onChange={(e) => updateGlobalInput(input.id, { description: e.target.value })}
-                          placeholder="Description"
-                          className="text-sm"
-                        />
-                      </div>
-                    </div>
-                    
-                    {input.type === "text" ? (
-                      <div className="space-y-1">
-                        <Label className="text-xs">Example Value</Label>
-                        <Input
-                          value={input.exampleValue || ""}
-                          onChange={(e) => updateGlobalInput(input.id, { exampleValue: e.target.value })}
-                          placeholder="Example text..."
-                          className="text-sm"
-                        />
-                      </div>
-                    ) : (
-                      <div className="space-y-1">
-                        <Label className="text-xs flex items-center gap-1">
-                          Guide Image
-                          <HelpCircle className="h-3 w-3 text-muted-foreground" />
-                        </Label>
-                        <div className="border-2 border-dashed border-border rounded-lg p-3 text-center">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleGlobalGuideImageUpload(input.id, e)}
-                            className="hidden"
-                            id={`global-guide-image-${input.id}`}
-                          />
-                          <label htmlFor={`global-guide-image-${input.id}`} className="cursor-pointer">
-                            {input.guideImage ? (
-                              <div className="space-y-1">
-                                <img 
-                                  src={input.guideImage} 
-                                  alt="Global guide image preview" 
-                                  className="max-h-20 mx-auto rounded object-cover"
-                                />
-                                <p className="text-xs text-muted-foreground">
-                                  Click to change guide image
-                                </p>
-                              </div>
-                            ) : (
-                              <>
-                                <Upload className="h-5 w-5 mx-auto mb-1 text-muted-foreground" />
-                                <p className="text-xs text-muted-foreground">
-                                  Upload guide image for users
-                                </p>
-                              </>
-                            )}
-                          </label>
-                        </div>
-                      </div>
-                    )}
+                    <p className="text-sm text-muted-foreground">
+                      Inputs that can be used across all pipelines
+                    </p>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          )}
-        </Card>
+                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                    <Button 
+                      onClick={() => addGlobalInput("text")}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <Type className="h-4 w-4" />
+                      Add Text Input
+                    </Button>
+                    <Button 
+                      onClick={() => addGlobalInput("image")}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <ImageIcon className="h-4 w-4" />
+                      Add Image Input
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent>
+              {globalInputs.length > 0 && (
+                <CardContent className="pt-0">
+                  <div className="space-y-3">
+                    {globalInputs.map((input) => (
+                      <div key={input.id} className="p-4 bg-background/50 rounded-lg border space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {input.type === "text" ? (
+                              <Type className="h-4 w-4 text-primary" />
+                            ) : (
+                              <ImageIcon className="h-4 w-4 text-primary" />
+                            )}
+                            <Badge variant="secondary" className="text-xs">
+                              {input.type}
+                            </Badge>
+                          </div>
+                          
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => deleteGlobalInput(input.id)}
+                            className="gap-1 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="space-y-1">
+                            <Label className="text-xs">Input Name</Label>
+                            <Input
+                              value={input.name}
+                              onChange={(e) => updateGlobalInput(input.id, { name: e.target.value })}
+                              placeholder="Input name"
+                              className="text-sm"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">Description</Label>
+                            <Input
+                              value={input.description || ""}
+                              onChange={(e) => updateGlobalInput(input.id, { description: e.target.value })}
+                              placeholder="Description"
+                              className="text-sm"
+                            />
+                          </div>
+                        </div>
+                        
+                        {input.type === "text" ? (
+                          <div className="space-y-1">
+                            <Label className="text-xs">Example Value</Label>
+                            <Input
+                              value={input.exampleValue || ""}
+                              onChange={(e) => updateGlobalInput(input.id, { exampleValue: e.target.value })}
+                              placeholder="Example text..."
+                              className="text-sm"
+                            />
+                          </div>
+                        ) : (
+                          <div className="space-y-1">
+                            <Label className="text-xs flex items-center gap-1">
+                              Guide Image
+                              <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                            </Label>
+                            <div className="border-2 border-dashed border-border rounded-lg p-3 text-center">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleGlobalGuideImageUpload(input.id, e)}
+                                className="hidden"
+                                id={`global-guide-image-${input.id}`}
+                              />
+                              <label htmlFor={`global-guide-image-${input.id}`} className="cursor-pointer">
+                                {input.guideImage ? (
+                                  <div className="space-y-1">
+                                    <img 
+                                      src={input.guideImage} 
+                                      alt="Global guide image preview" 
+                                      className="max-h-20 mx-auto rounded object-cover"
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                      Click to change guide image
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <Upload className="h-5 w-5 mx-auto mb-1 text-muted-foreground" />
+                                    <p className="text-xs text-muted-foreground">
+                                      Upload guide image for users
+                                    </p>
+                                  </>
+                                )}
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              )}
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       )}
 
       {/* Pipelines Header */}
