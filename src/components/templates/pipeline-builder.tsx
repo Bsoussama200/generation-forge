@@ -247,26 +247,28 @@ export function PipelineBuilder({
                   </div>
                 </CollapsibleTrigger>
                 <div className="flex items-center gap-2">
-                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                    <Button 
-                      onClick={() => addGlobalInput("text")}
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                    >
-                      <Type className="h-4 w-4" />
-                      Add Text Input
-                    </Button>
-                    <Button 
-                      onClick={() => addGlobalInput("image")}
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                    >
-                      <ImageIcon className="h-4 w-4" />
-                      Add Image Input
-                    </Button>
-                  </div>
+                  {!isGlobalInputsCollapsed && (
+                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                      <Button 
+                        onClick={() => addGlobalInput("text")}
+                        variant="outline"
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <Type className="h-4 w-4" />
+                        Add Text Input
+                      </Button>
+                      <Button 
+                        onClick={() => addGlobalInput("image")}
+                        variant="outline"
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <ImageIcon className="h-4 w-4" />
+                        Add Image Input
+                      </Button>
+                    </div>
+                  )}
                   <CollapsibleTrigger asChild>
                     <button className="p-1 hover:bg-muted/20 rounded transition-colors">
                       <ChevronDown 
