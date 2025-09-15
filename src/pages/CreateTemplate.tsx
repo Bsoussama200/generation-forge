@@ -28,7 +28,6 @@ export default function CreateTemplate() {
   const [templateName, setTemplateName] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
-  const [tokenCost, setTokenCost] = useState(20);
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
   const [globalInputs, setGlobalInputs] = useState<GlobalInput[]>([]);
@@ -171,25 +170,6 @@ export default function CreateTemplate() {
                         <p className="text-xs text-muted-foreground">
                           Separate tags with commas to help users discover your template
                         </p>
-                      </div>
-
-                      {/* Token Cost */}
-                      <div className="space-y-2">
-                        <Label htmlFor="token-cost">Token Cost per Generation</Label>
-                        <Select value={tokenCost.toString()} onValueChange={(value) => setTokenCost(parseInt(value))}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="10">10 tokens</SelectItem>
-                            <SelectItem value="15">15 tokens</SelectItem>
-                            <SelectItem value="20">20 tokens</SelectItem>
-                            <SelectItem value="25">25 tokens</SelectItem>
-                            <SelectItem value="30">30 tokens</SelectItem>
-                            <SelectItem value="35">35 tokens</SelectItem>
-                            <SelectItem value="50">50 tokens</SelectItem>
-                          </SelectContent>
-                        </Select>
                       </div>
 
                       {/* Cover Image Upload */}
