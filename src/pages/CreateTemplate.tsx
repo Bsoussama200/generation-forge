@@ -249,7 +249,7 @@ export default function CreateTemplate() {
               <CardContent className="space-y-4">
                 {templateName ? (
                   <div className="space-y-3">
-                    <div className="aspect-video bg-gradient-secondary rounded-lg flex items-center justify-center overflow-hidden">
+                    <div className="aspect-square bg-gradient-secondary rounded-lg flex items-center justify-center overflow-hidden">
                       {coverImage ? (
                         <img src={coverImage} alt="Cover preview" className="w-full h-full object-cover" />
                       ) : (
