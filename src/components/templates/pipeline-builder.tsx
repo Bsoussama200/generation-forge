@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -82,6 +83,8 @@ export interface PipelineInput {
   nestedInputs?: PipelineInput[];
   isGlobalInput?: boolean;
   globalInputId?: string;
+  analyseWithAi?: boolean;
+  analysisPrompt?: string;
 }
 
 interface PipelineBuilderProps {
@@ -1430,14 +1433,51 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                 )}
 
                 {input.type === "image" && input.inputSource === "user" && !input.editWithAi && (
-                  <div className="space-y-2">
-                    <Label>Description</Label>
-                    <Textarea
-                      value={input.description || ""}
-                      onChange={(e) => updateInput(input.id, { description: e.target.value })}
-                      placeholder="Describe what this image input is for..."
-                      rows={2}
-                    />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Description</Label>
+                      <Textarea
+                        value={input.description || ""}
+                        onChange={(e) => updateInput(input.id, { description: e.target.value })}
+                        placeholder="Describe what this image input is for..."
+                        rows={2}
+                      />
+                    </div>
+                    
+                    <div className="space-y-3 border-l-4 border-primary/30 pl-4 bg-primary/5 rounded-r-lg p-3">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`analyse-${input.id}`}
+                          checked={input.analyseWithAi || false}
+                          onCheckedChange={(checked) => {
+                            updateInput(input.id, { 
+                              analyseWithAi: checked as boolean,
+                              analysisPrompt: checked ? "Analyze this image and describe what you see in detail." : undefined
+                            });
+                          }}
+                        />
+                        <Label htmlFor={`analyse-${input.id}`} className="text-sm font-medium cursor-pointer">
+                          Analyse with AI
+                        </Label>
+                        <Sparkles className="h-4 w-4 text-primary" />
+                      </div>
+                      
+                      {input.analyseWithAi && (
+                        <div className="space-y-2">
+                          <Label className="text-sm">Analysis Prompt</Label>
+                          <Textarea
+                            value={input.analysisPrompt || ""}
+                            onChange={(e) => updateInput(input.id, { analysisPrompt: e.target.value })}
+                            placeholder="Describe how you want the AI to analyze this image..."
+                            rows={2}
+                            className="text-sm"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            The AI analysis result will be added to the main pipeline prompt as: {`{{Analysis of ${input.name}}}`}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
