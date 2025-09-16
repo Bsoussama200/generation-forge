@@ -674,6 +674,30 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
       updatedPrompt = updatedPrompt.replace(new RegExp(oldReference.replace(/[{}]/g, '\\$&'), 'g'), newReference);
     }
     
+    // If toggling the analyseWithAi checkbox for image inputs
+    if (updates.hasOwnProperty('analyseWithAi') && currentInput?.type === "image") {
+      const analysisReference = `{{Analysis of ${currentInput.name}}}`;
+      
+      if (updates.analyseWithAi) {
+        // Add the analysis reference to the prompt if not already present
+        if (!updatedPrompt.includes(analysisReference)) {
+          updatedPrompt = updatedPrompt.trim() + ` ${analysisReference}`;
+        }
+      } else {
+        // Remove the analysis reference from the prompt
+        updatedPrompt = updatedPrompt.replace(new RegExp(analysisReference.replace(/[{}]/g, '\\$&'), 'g'), '');
+        // Clean up any extra spaces
+        updatedPrompt = updatedPrompt.replace(/\s+/g, ' ').trim();
+      }
+    }
+    
+    // If updating the name of an image input that has AI analysis enabled, update analysis references
+    if (updates.name && currentInput?.type === "image" && currentInput.analyseWithAi && currentInput.name !== updates.name) {
+      const oldAnalysisReference = `{{Analysis of ${currentInput.name}}}`;
+      const newAnalysisReference = `{{Analysis of ${updates.name}}}`;
+      updatedPrompt = updatedPrompt.replace(new RegExp(oldAnalysisReference.replace(/[{}]/g, '\\$&'), 'g'), newAnalysisReference);
+    }
+    
     setEditedPipeline({
       ...editedPipeline,
       prompt: updatedPrompt,
@@ -713,6 +737,14 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
     if (inputToDelete?.type === "text") {
       const referenceToRemove = `{{${inputToDelete.name}}}`;
       updatedPrompt = updatedPrompt.replace(new RegExp(referenceToRemove.replace(/[{}]/g, '\\$&'), 'g'), '');
+      // Clean up any extra spaces
+      updatedPrompt = updatedPrompt.replace(/\s+/g, ' ').trim();
+    }
+    
+    // If deleting an image input with AI analysis, remove its analysis reference from the prompt
+    if (inputToDelete?.type === "image" && inputToDelete.analyseWithAi) {
+      const analysisReferenceToRemove = `{{Analysis of ${inputToDelete.name}}}`;
+      updatedPrompt = updatedPrompt.replace(new RegExp(analysisReferenceToRemove.replace(/[{}]/g, '\\$&'), 'g'), '');
       // Clean up any extra spaces
       updatedPrompt = updatedPrompt.replace(/\s+/g, ' ').trim();
     }
