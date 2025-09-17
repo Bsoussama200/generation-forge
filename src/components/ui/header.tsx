@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sparkles, Coins, User, Settings, LogOut, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import templateLabLogo from "@/assets/templatelab-logo.png";
 
 interface HeaderProps {
   className?: string;
@@ -31,15 +30,15 @@ export function Header({ className }: HeaderProps) {
     <header className={cn("sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary shadow-medium overflow-hidden">
-            <img src={templateLabLogo} alt="TemplateLab AI" className="h-8 w-8 object-contain" />
+        <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary shadow-medium">
+            <Sparkles className="h-8 w-8 text-primary-foreground" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               TemplateLab
             </h1>
-            <span className="text-xs text-muted-foreground">AI</span>
+            <span className="text-sm text-muted-foreground">AI</span>
           </div>
         </Link>
 
