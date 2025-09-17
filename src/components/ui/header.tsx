@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sparkles, Coins, User, Settings, LogOut, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import bzoLogo from "@/assets/bzo-ai-logo.png";
 
 interface HeaderProps {
   className?: string;
@@ -31,14 +32,13 @@ export function Header({ className }: HeaderProps) {
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary shadow-medium">
-            <Sparkles className="h-6 w-6 text-primary-foreground" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary shadow-medium overflow-hidden">
+            <img src={bzoLogo} alt="BZO AI" className="h-8 w-8 object-contain" />
           </div>
           <div className="flex flex-col">
             <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              TemplateForge
+              BZO AI
             </h1>
-            <span className="text-xs text-muted-foreground">AI</span>
           </div>
         </Link>
 
