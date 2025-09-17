@@ -79,7 +79,7 @@ export default function Dashboard() {
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Welcome to TemplateForge AI
+              Welcome to TemplateLab AI
             </h1>
             <p className="text-lg md:text-xl text-white/90 mb-6 max-w-2xl mx-auto">
               Create stunning content with AI-powered templates. From viral videos to professional designs, 
