@@ -64,6 +64,9 @@ export interface GlobalInput {
   description?: string;
   exampleValue?: string;
   guideImage?: string;
+  analyseWithAi?: boolean;
+  analysisPrompt?: string;
+  useImageAsPipelineInput?: boolean;
 }
 
 export interface PipelineInput {
@@ -400,7 +403,7 @@ export function PipelineBuilder({
                             </div>
                           </div>
                         )}
-                      </div>
+                       </div>
                     ))}
                   </div>
                 </CardContent>
@@ -644,7 +647,10 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
       description: globalInput.description,
       exampleValue: globalInput.exampleValue,
       isGlobalInput: true,
-      globalInputId: globalInput.id
+      globalInputId: globalInput.id,
+      analyseWithAi: globalInput.analyseWithAi,
+      analysisPrompt: globalInput.analysisPrompt,
+      useImageAsPipelineInput: globalInput.useImageAsPipelineInput
     };
     
     const updatedInputs = [...editedPipeline.inputs, newInput];
