@@ -64,9 +64,6 @@ export interface GlobalInput {
   description?: string;
   exampleValue?: string;
   guideImage?: string;
-  analyseWithAi?: boolean;
-  analysisPrompt?: string;
-  useImageAsPipelineInput?: boolean;
 }
 
 export interface PipelineInput {
@@ -366,99 +363,44 @@ export function PipelineBuilder({
                             />
                           </div>
                         ) : (
-                          <div className="space-y-3">
-                            <div className="space-y-1">
-                              <Label className="text-xs flex items-center gap-1">
-                                Guide Image
-                                <HelpCircle className="h-3 w-3 text-muted-foreground" />
-                              </Label>
-                              <div className="border-2 border-dashed border-border rounded-lg p-3 text-center">
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => handleGlobalGuideImageUpload(input.id, e)}
-                                  className="hidden"
-                                  id={`global-guide-image-${input.id}`}
-                                />
-                                <label htmlFor={`global-guide-image-${input.id}`} className="cursor-pointer">
-                                  {input.guideImage ? (
-                                    <div className="space-y-1">
-                                      <img 
-                                        src={input.guideImage} 
-                                        alt="Global guide image preview" 
-                                        className="max-h-20 mx-auto rounded object-cover"
-                                      />
-                                      <p className="text-xs text-muted-foreground">
-                                        Click to change guide image
-                                      </p>
-                                    </div>
-                                  ) : (
-                                    <>
-                                      <Upload className="h-5 w-5 mx-auto mb-1 text-muted-foreground" />
-                                      <p className="text-xs text-muted-foreground">
-                                        Upload guide image for users
-                                      </p>
-                                    </>
-                                  )}
-                                </label>
-                              </div>
-                            </div>
-                            
-                            {/* AI Analysis feature for global image inputs */}
-                            <div className="space-y-3 border-l-4 border-primary/30 pl-4 bg-primary/5 rounded-r-lg p-3">
-                              <div className="flex items-center space-x-2">
-                                <Checkbox
-                                  id={`global-analyse-${input.id}`}
-                                  checked={input.analyseWithAi || false}
-                                  onCheckedChange={(checked) => {
-                                    updateGlobalInput(input.id, { 
-                                      analyseWithAi: checked as boolean,
-                                      analysisPrompt: checked ? "Analyze this image and describe what you see in detail." : undefined
-                                    });
-                                  }}
-                                />
-                                <Label htmlFor={`global-analyse-${input.id}`} className="text-xs font-medium cursor-pointer">
-                                  Analyse with AI
-                                </Label>
-                                <Sparkles className="h-3 w-3 text-primary" />
-                              </div>
-                              
-                              {input.analyseWithAi && (
-                                <div className="space-y-2">
+                          <div className="space-y-1">
+                            <Label className="text-xs flex items-center gap-1">
+                              Guide Image
+                              <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                            </Label>
+                            <div className="border-2 border-dashed border-border rounded-lg p-3 text-center">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleGlobalGuideImageUpload(input.id, e)}
+                                className="hidden"
+                                id={`global-guide-image-${input.id}`}
+                              />
+                              <label htmlFor={`global-guide-image-${input.id}`} className="cursor-pointer">
+                                {input.guideImage ? (
                                   <div className="space-y-1">
-                                    <Label className="text-xs">Analysis Prompt</Label>
-                                    <Textarea
-                                      value={input.analysisPrompt || ""}
-                                      onChange={(e) => updateGlobalInput(input.id, { analysisPrompt: e.target.value })}
-                                      placeholder="Describe how you want the AI to analyze this image..."
-                                      rows={2}
-                                      className="text-xs"
+                                    <img 
+                                      src={input.guideImage} 
+                                      alt="Global guide image preview" 
+                                      className="max-h-20 mx-auto rounded object-cover"
                                     />
                                     <p className="text-xs text-muted-foreground">
-                                      The AI analysis result will be added to the main pipeline prompt as: {`{{Analysis of ${input.name}}}`}
+                                      Click to change guide image
                                     </p>
                                   </div>
-                                  
-                                  <div className="flex items-center space-x-2 pl-2 border-l-2 border-muted">
-                                    <Checkbox
-                                      id={`global-use-image-input-${input.id}`}
-                                      checked={input.useImageAsPipelineInput || false}
-                                      onCheckedChange={(checked) => {
-                                        updateGlobalInput(input.id, { 
-                                          useImageAsPipelineInput: checked as boolean
-                                        });
-                                      }}
-                                    />
-                                    <Label htmlFor={`global-use-image-input-${input.id}`} className="text-xs cursor-pointer">
-                                      Use the image as input of the pipeline
-                                    </Label>
-                                  </div>
-                                </div>
-                              )}
+                                ) : (
+                                  <>
+                                    <Upload className="h-5 w-5 mx-auto mb-1 text-muted-foreground" />
+                                    <p className="text-xs text-muted-foreground">
+                                      Upload guide image for users
+                                    </p>
+                                  </>
+                                )}
+                              </label>
                             </div>
                           </div>
                         )}
-                       </div>
+                      </div>
                     ))}
                   </div>
                 </CardContent>
@@ -702,10 +644,7 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
       description: globalInput.description,
       exampleValue: globalInput.exampleValue,
       isGlobalInput: true,
-      globalInputId: globalInput.id,
-      analyseWithAi: globalInput.analyseWithAi,
-      analysisPrompt: globalInput.analysisPrompt,
-      useImageAsPipelineInput: globalInput.useImageAsPipelineInput
+      globalInputId: globalInput.id
     };
     
     const updatedInputs = [...editedPipeline.inputs, newInput];
@@ -1146,9 +1085,9 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                 </div>
 
                 {input.isGlobalInput ? (
-                  // Display for global inputs with AI analysis options for images
+                  // Read-only display for global inputs
                   <div className="bg-muted/50 rounded-lg p-4 border border-dashed">
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Label className="text-muted-foreground">Global Input:</Label>
                         <span className="font-medium">{input.name}</span>
@@ -1165,33 +1104,6 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                           <span className="text-sm text-muted-foreground">{input.placeholder}</span>
                         </div>
                       )}
-                      
-                      {/* Show AI analysis options for global image inputs */}
-                      {input.type === "image" && input.analyseWithAi && (
-                        <div className="space-y-2 border-t border-muted pt-3">
-                          <div className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-primary" />
-                            <Label className="text-sm font-medium text-primary">AI Analysis Enabled</Label>
-                          </div>
-                          {input.analysisPrompt && (
-                            <div className="bg-primary/5 rounded p-2">
-                              <Label className="text-xs text-muted-foreground">Analysis Prompt:</Label>
-                              <p className="text-sm mt-1">{input.analysisPrompt}</p>
-                            </div>
-                          )}
-                          <p className="text-xs text-muted-foreground">
-                            Analysis result will be added as: {`{{Analysis of ${input.name}}}`}
-                          </p>
-                          {input.useImageAsPipelineInput && (
-                            <div className="flex items-center gap-2">
-                              <Badge variant="secondary" className="text-xs">
-                                Image used as pipeline input
-                              </Badge>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      
                       <p className="text-xs text-muted-foreground mt-2">
                         This is a global input and cannot be edited here. Modify it in the Global Inputs section above.
                       </p>
