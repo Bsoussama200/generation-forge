@@ -85,6 +85,7 @@ export interface PipelineInput {
   globalInputId?: string;
   analyseWithAi?: boolean;
   analysisPrompt?: string;
+  useImageAsPipelineInput?: boolean;
 }
 
 interface PipelineBuilderProps {
@@ -1495,18 +1496,35 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                       </div>
                       
                       {input.analyseWithAi && (
-                        <div className="space-y-2">
-                          <Label className="text-sm">Analysis Prompt</Label>
-                          <Textarea
-                            value={input.analysisPrompt || ""}
-                            onChange={(e) => updateInput(input.id, { analysisPrompt: e.target.value })}
-                            placeholder="Describe how you want the AI to analyze this image..."
-                            rows={2}
-                            className="text-sm"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            The AI analysis result will be added to the main pipeline prompt as: {`{{Analysis of ${input.name}}}`}
-                          </p>
+                        <div className="space-y-3">
+                          <div className="space-y-2">
+                            <Label className="text-sm">Analysis Prompt</Label>
+                            <Textarea
+                              value={input.analysisPrompt || ""}
+                              onChange={(e) => updateInput(input.id, { analysisPrompt: e.target.value })}
+                              placeholder="Describe how you want the AI to analyze this image..."
+                              rows={2}
+                              className="text-sm"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              The AI analysis result will be added to the main pipeline prompt as: {`{{Analysis of ${input.name}}}`}
+                            </p>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2 pl-4 border-l-2 border-muted">
+                            <Checkbox
+                              id={`use-image-input-${input.id}`}
+                              checked={input.useImageAsPipelineInput || false}
+                              onCheckedChange={(checked) => {
+                                updateInput(input.id, { 
+                                  useImageAsPipelineInput: checked as boolean
+                                });
+                              }}
+                            />
+                            <Label htmlFor={`use-image-input-${input.id}`} className="text-sm cursor-pointer">
+                              Use the image as input of the pipeline
+                            </Label>
+                          </div>
                         </div>
                       )}
                     </div>
