@@ -1091,9 +1091,9 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                 </div>
 
                 {input.isGlobalInput ? (
-                  // Read-only display for global inputs
+                  // Display for global inputs with AI analysis options for images
                   <div className="bg-muted/50 rounded-lg p-4 border border-dashed">
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <div className="flex items-center gap-2">
                         <Label className="text-muted-foreground">Global Input:</Label>
                         <span className="font-medium">{input.name}</span>
@@ -1110,6 +1110,33 @@ function PipelineEditor({ pipeline, onSave, onCancel, globalInputs = [] }: Pipel
                           <span className="text-sm text-muted-foreground">{input.placeholder}</span>
                         </div>
                       )}
+                      
+                      {/* Show AI analysis options for global image inputs */}
+                      {input.type === "image" && input.analyseWithAi && (
+                        <div className="space-y-2 border-t border-muted pt-3">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="h-4 w-4 text-primary" />
+                            <Label className="text-sm font-medium text-primary">AI Analysis Enabled</Label>
+                          </div>
+                          {input.analysisPrompt && (
+                            <div className="bg-primary/5 rounded p-2">
+                              <Label className="text-xs text-muted-foreground">Analysis Prompt:</Label>
+                              <p className="text-sm mt-1">{input.analysisPrompt}</p>
+                            </div>
+                          )}
+                          <p className="text-xs text-muted-foreground">
+                            Analysis result will be added as: {`{{Analysis of ${input.name}}}`}
+                          </p>
+                          {input.useImageAsPipelineInput && (
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary" className="text-xs">
+                                Image used as pipeline input
+                              </Badge>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
                       <p className="text-xs text-muted-foreground mt-2">
                         This is a global input and cannot be edited here. Modify it in the Global Inputs section above.
                       </p>
