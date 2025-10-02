@@ -22,25 +22,25 @@ erDiagram
     PIPELINE_EXECUTIONS ||--|| TEMPLATE_USAGE : records
 
     USERS {
-        uuid id PK
-        string email UK
+        uuid id
+        string email
         string password_hash
         timestamp created_at
         timestamp updated_at
     }
     
     USER_ROLES {
-        uuid id PK
-        uuid user_id FK
-        enum role
+        uuid id
+        uuid user_id
+        string role
         timestamp created_at
     }
     
     USER_PROFILES {
-        uuid user_id PK_FK
+        uuid user_id
         string display_name
         string avatar_url
-        text bio
+        string bio
         string subscription_tier
         int credits_remaining
         timestamp created_at
@@ -48,10 +48,10 @@ erDiagram
     }
     
     TEMPLATES {
-        uuid id PK
-        uuid user_id FK
+        uuid id
+        uuid user_id
         string name
-        text description
+        string description
         string category
         boolean is_public
         string thumbnail_url
@@ -62,56 +62,56 @@ erDiagram
     }
     
     PIPELINES {
-        uuid id PK
-        uuid template_id FK
+        uuid id
+        uuid template_id
         string name
-        text description
-        jsonb steps
+        string description
+        json steps
         timestamp created_at
         timestamp updated_at
     }
     
     GLOBAL_INPUTS {
-        uuid id PK
-        uuid template_id FK
-        string input_key UK
-        enum input_type
+        uuid id
+        uuid template_id
+        string input_key
+        string input_type
         string label
-        text placeholder
-        jsonb default_value
-        jsonb validation_rules
+        string placeholder
+        json default_value
+        json validation_rules
         timestamp created_at
     }
     
     PIPELINE_EXECUTIONS {
-        uuid id PK
-        uuid template_id FK
-        uuid user_id FK
-        jsonb input_data
-        enum status
-        jsonb results
-        text error_message
+        uuid id
+        uuid template_id
+        uuid user_id
+        json input_data
+        string status
+        json results
+        string error_message
         timestamp started_at
         timestamp completed_at
         timestamp created_at
     }
     
     TEMPLATE_USAGE {
-        uuid id PK
-        uuid template_id FK
-        uuid user_id FK
-        uuid execution_id FK
+        uuid id
+        uuid template_id
+        uuid user_id
+        uuid execution_id
         int credits_used
         int execution_time_ms
         timestamp created_at
     }
     
     TEMPLATE_RATINGS {
-        uuid id PK
-        uuid template_id FK
-        uuid user_id FK
+        uuid id
+        uuid template_id
+        uuid user_id
         int rating
-        text review
+        string review
         timestamp created_at
         timestamp updated_at
     }
