@@ -47,6 +47,8 @@ import {
   ChevronDown
 } from "lucide-react";
 import { PipelineInputCollector } from "./pipeline-input-collector";
+import { aiService } from "@/services/aiService";
+import { useToast } from "@/hooks/use-toast";
 
 export interface Pipeline {
   id: string;
@@ -109,6 +111,7 @@ export function PipelineBuilder({
   const [runResult, setRunResult] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isGlobalInputsCollapsed, setIsGlobalInputsCollapsed] = useState(true);
+  const { toast } = useToast();
 
   const addPipeline = (type: "image" | "video") => {
     if (pipelines.length >= 10) return;
@@ -172,16 +175,57 @@ export function PipelineBuilder({
     setIsRunning(true);
     setRunResult(null);
 
-    // Log collected inputs for debugging
     console.log("Running pipeline with inputs:", { collectedInputs, collectedNestedInputs, collectedGlobalInputs });
 
-    // Simulate pipeline execution
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    // Static result for now
-    const staticImageUrl = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=512&h=512&fit=crop";
-    setRunResult(staticImageUrl);
-    setIsRunning(false);
+    try {
+      let result: string;
+      
+      if (pipeline.type === "image") {
+        // Build the prompt with collected inputs
+        let finalPrompt = pipeline.prompt;
+        
+        // Replace placeholders with actual collected values
+        collectedInputs.forEach(input => {
+          if (input.type === "text") {
+            finalPrompt += `\n${input.value}`;
+          }
+        });
+        
+        toast({
+          title: "Generating image...",
+          description: "Using free Gemini AI to create your image",
+        });
+        
+        result = await aiService.generateImage({ prompt: finalPrompt });
+      } else {
+        // For video, use text generation as placeholder since we don't have video API yet
+        toast({
+          title: "Generating content...",
+          description: "Video generation coming soon - showing text for now",
+        });
+        
+        result = await aiService.generateText({ 
+          prompt: pipeline.prompt,
+          systemPrompt: "You are a creative video script writer."
+        });
+      }
+      
+      setRunResult(result);
+      toast({
+        title: "Success!",
+        description: `${pipeline.type === "image" ? "Image" : "Content"} generated successfully`,
+      });
+    } catch (error: any) {
+      console.error("Pipeline execution error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate content",
+        variant: "destructive",
+      });
+      setRunResult("Error: " + (error.message || "Failed to generate content"));
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   const movePipeline = (fromIndex: number, toIndex: number) => {
