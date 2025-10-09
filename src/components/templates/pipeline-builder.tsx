@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { aiService } from "@/services/aiService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -102,6 +104,7 @@ export function PipelineBuilder({
   globalInputs = [], 
   onGlobalInputsChange 
 }: PipelineBuilderProps) {
+  const { toast } = useToast();
   const [editingPipeline, setEditingPipeline] = useState<Pipeline | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [runningPipeline, setRunningPipeline] = useState<Pipeline | null>(null);
@@ -176,13 +179,56 @@ export function PipelineBuilder({
     // Log collected inputs for debugging
     console.log("Running pipeline with inputs:", { collectedInputs, collectedNestedInputs, collectedGlobalInputs });
 
-    // Simulate pipeline execution
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    try {
+      // Build the prompt with collected inputs
+      let finalPrompt = pipeline.prompt;
+      
+      // Add collected text inputs to the prompt
+      collectedInputs.forEach(input => {
+        if (input.type === 'text' && typeof input.value === 'string') {
+          finalPrompt += `\n- ${input.value}`;
+        }
+      });
 
-    // Static result for now
-    const staticImageUrl = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=512&h=512&fit=crop";
-    setRunResult(staticImageUrl);
-    setIsRunning(false);
+      let result;
+      
+      if (pipeline.type === "image") {
+        // Generate image using Gemini
+        result = await aiService.generateImage({
+          prompt: finalPrompt
+        });
+        setRunResult(result.imageUrl);
+        
+        toast({
+          title: "Success",
+          description: "Image generated successfully with Gemini AI"
+        });
+      } else {
+        // For video, generate text description for now
+        result = await aiService.generateContent({
+          prompt: finalPrompt,
+          stepType: 'video-description'
+        });
+        
+        // For video, we'll show a placeholder with the description
+        setRunResult(`Video generation result: ${result.content}`);
+        
+        toast({
+          title: "Success",
+          description: "Video description generated (full video generation coming soon)"
+        });
+      }
+    } catch (error: any) {
+      console.error('Pipeline execution error:', error);
+      toast({
+        title: "Pipeline Failed",
+        description: error.message || "Failed to execute pipeline",
+        variant: "destructive"
+      });
+      setRunResult(null);
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   const movePipeline = (fromIndex: number, toIndex: number) => {
