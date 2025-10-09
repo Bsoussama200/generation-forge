@@ -1,4 +1,0 @@
-project_id = "zubmcpdirwwheojgpldn"
-
-[functions.ai-generate-content]
-verify_jwt = false
