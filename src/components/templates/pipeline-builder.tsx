@@ -172,16 +172,45 @@ export function PipelineBuilder({
     setIsRunning(true);
     setRunResult(null);
 
-    // Log collected inputs for debugging
-    console.log("Running pipeline with inputs:", { collectedInputs, collectedNestedInputs, collectedGlobalInputs });
+    try {
+      console.log("Running pipeline with inputs:", { collectedInputs, collectedNestedInputs, collectedGlobalInputs });
 
-    // Simulate pipeline execution
-    await new Promise(resolve => setTimeout(resolve, 3000));
+      // Build the prompt from pipeline inputs
+      let finalPrompt = pipeline.prompt;
+      
+      // Replace input placeholders with actual values
+      collectedInputs.forEach(input => {
+        if (input.type === "text" && typeof input.value === "string") {
+          const inputConfig = pipeline.inputs.find(i => i.id === input.inputId);
+          if (inputConfig) {
+            finalPrompt += `\n${inputConfig.name}: ${input.value}`;
+          }
+        }
+      });
 
-    // Static result for now
-    const staticImageUrl = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=512&h=512&fit=crop";
-    setRunResult(staticImageUrl);
-    setIsRunning(false);
+      console.log("Generating content with prompt:", finalPrompt);
+
+      // Generate content using AI
+      const { generateAIContent } = await import("@/lib/aiClient");
+      const result = await generateAIContent({
+        prompt: finalPrompt,
+        type: pipeline.type === "image" ? "image" : "text",
+        model: "google/gemini-2.5-flash"
+      });
+
+      if (pipeline.type === "image" && result.imageUrl) {
+        setRunResult(result.imageUrl);
+      } else if (result.content) {
+        setRunResult(result.content);
+      } else {
+        throw new Error("No content generated");
+      }
+    } catch (error) {
+      console.error("Pipeline execution error:", error);
+      setRunResult(`Error: ${error instanceof Error ? error.message : "Failed to generate content"}`);
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   const movePipeline = (fromIndex: number, toIndex: number) => {
@@ -573,11 +602,21 @@ export function PipelineBuilder({
                   <p className="text-sm font-medium text-primary mb-2">
                     ✓ Pipeline completed successfully
                   </p>
-                  <img 
-                    src={runResult} 
-                    alt="Pipeline output" 
-                    className="max-w-full max-h-64 mx-auto rounded-lg shadow-sm"
-                  />
+                  {runResult.startsWith("data:image") || runResult.includes("unsplash.com") || runResult.includes("http") ? (
+                    <img 
+                      src={runResult} 
+                      alt="Pipeline output" 
+                      className="max-w-full max-h-64 mx-auto rounded-lg shadow-sm"
+                    />
+                  ) : runResult.startsWith("Error:") ? (
+                    <div className="p-4 bg-destructive/10 text-destructive rounded-lg text-sm text-left">
+                      {runResult}
+                    </div>
+                  ) : (
+                    <div className="p-4 bg-muted rounded-lg text-sm text-left whitespace-pre-wrap max-h-64 overflow-y-auto">
+                      {runResult}
+                    </div>
+                  )}
                 </div>
               </div>
             ) : null}
