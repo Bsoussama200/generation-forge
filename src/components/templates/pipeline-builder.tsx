@@ -47,6 +47,7 @@ import {
   ChevronDown
 } from "lucide-react";
 import { PipelineInputCollector } from "./pipeline-input-collector";
+import { PipelineTester } from "./pipeline-tester";
 
 export interface Pipeline {
   id: string;
@@ -528,12 +529,15 @@ export function PipelineBuilder({
           </DialogHeader>
           
           {editingPipeline && (
-            <PipelineEditor
-              pipeline={editingPipeline}
-              onSave={savePipeline}
-              onCancel={() => setIsDialogOpen(false)}
-              globalInputs={globalInputs}
-            />
+            <>
+              <PipelineEditor
+                pipeline={editingPipeline}
+                onSave={savePipeline}
+                onCancel={() => setIsDialogOpen(false)}
+                globalInputs={globalInputs}
+              />
+              <PipelineTester pipeline={editingPipeline} />
+            </>
           )}
         </DialogContent>
       </Dialog>
