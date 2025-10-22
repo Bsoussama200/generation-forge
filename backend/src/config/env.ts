@@ -10,7 +10,7 @@ export const config = {
   database: {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
-    name: process.env.DB_NAME || 'flexflow',
+    name: process.env.DB_NAME || 'flexflowlab',
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || '',
   },
@@ -34,7 +34,7 @@ export const config = {
     },
   },
   storage: {
-    bucket: process.env.STORAGE_BUCKET || 'flexflow-storage',
+    bucket: process.env.STORAGE_BUCKET || 'flexflowlab-storage',
     path: process.env.STORAGE_PATH || './uploads',
   },
   rateLimit: {

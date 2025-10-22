@@ -36,9 +36,9 @@ export function Header({ className }: HeaderProps) {
           </div>
           <div className="flex flex-col">
             <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              FlexFlow
+              FlexFlowLab
             </h1>
-            <span className="text-sm text-muted-foreground">AI</span>
+            
           </div>
         </Link>
 

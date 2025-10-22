@@ -67,7 +67,7 @@ export default function Index() {
               <Sparkles className="h-6 w-6 text-background" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              FlexFlow AI
+              FlexFlowLab
             </span>
           </Link>
           
@@ -193,7 +193,7 @@ export default function Index() {
               <div className="space-y-4">
                 <h3 className="text-3xl font-bold">Ready to Transform Your Content?</h3>
                 <p className="text-lg text-muted-foreground">
-                  Join thousands of creators who are already using FlexFlow AI 
+                  Join thousands of creators who are already using FlexFlowLab 
                   to build amazing content.
                 </p>
               </div>
@@ -233,11 +233,11 @@ export default function Index() {
               <div className="p-2 bg-gradient-primary rounded-lg">
                 <Sparkles className="h-5 w-5 text-background" />
               </div>
-              <span className="font-semibold text-foreground">FlexFlow AI</span>
+              <span className="font-semibold text-foreground">FlexFlowLab</span>
             </div>
             
             <div className="text-sm text-muted-foreground">
-              © 2024 FlexFlow AI. Crafted with ⚡ for creators.
+              © 2024 FlexFlowLab. Crafted with ⚡ for creators.
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
--- FlexFlow Database Schema
+-- FlexFlowLab Database Schema
 -- PostgreSQL Database Structure
 
 -- Enable UUID extension

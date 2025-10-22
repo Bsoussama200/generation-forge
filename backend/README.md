@@ -1,6 +1,6 @@
-# FlexFlow Backend API
+# FlexFlowLab Backend API
 
-Node.js/Express backend for the FlexFlow Template & Pipeline Builder Platform.
+Node.js/Express backend for the FlexFlowLab Template & Pipeline Builder Platform.
 
 ## Architecture
 
@@ -64,7 +64,7 @@ Required environment variables:
 Run the database schema migration:
 
 ```bash
-psql -U postgres -d flexflow -f database/schema.sql
+psql -U postgres -d flexflowlab -f database/schema.sql
 ```
 
 Or connect to your PostgreSQL instance and execute the SQL file manually.
@@ -258,7 +258,7 @@ Use PM2 or similar for production:
 
 ```bash
 npm install -g pm2
-pm2 start dist/server.js --name flexflow-api
+pm2 start dist/server.js --name flexflowlab-api
 ```
 
 ## License
