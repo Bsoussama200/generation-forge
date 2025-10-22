@@ -1,7 +1,7 @@
 {
-  "name": "templatelab-backend",
+  "name": "flexflow-backend",
   "version": "1.0.0",
-  "description": "Backend API for TemplateLab - Template & Pipeline Builder Platform",
+  "description": "Backend API for FlexFlow - Template & Pipeline Builder Platform",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/server.ts",

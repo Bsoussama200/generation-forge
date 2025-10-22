@@ -1,6 +1,6 @@
 # Entity Relationship Diagram (ERD)
 
-## TemplateLab Database Schema
+## FlexFlow Database Schema
 
 ```mermaid
 erDiagram

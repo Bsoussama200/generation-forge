@@ -1,4 +1,4 @@
--- TemplateLab Database Schema
+-- FlexFlow Database Schema
 -- PostgreSQL Database Structure
 
 -- Enable UUID extension
