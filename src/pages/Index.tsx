@@ -1,247 +1,235 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Zap, 
   Sparkles, 
-  Rocket, 
-  Code2, 
-  Palette, 
   ArrowRight,
-  Star,
-  Users,
-  TrendingUp,
-  Shield
+  Play
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Header } from "@/components/ui/header";
 
-const features = [
+const featuredTemplates = [
   {
-    icon: Zap,
-    title: "AI-Powered Templates",
-    description: "Generate stunning content with cutting-edge AI technology",
-    color: "text-primary"
+    id: "1",
+    title: "Viral TikTok",
+    subtitle: "DANCE CHALLENGE",
+    description: "Create engaging dance videos with AI-powered effects",
+    image: "https://images.unsplash.com/photo-1547153760-18fc86324498?w=800&h=600&fit=crop",
+    badge: "Trending",
+    cta: "EXPLORE VIRAL TIKTOK"
   },
   {
-    icon: Code2,
-    title: "Custom Pipelines",
-    description: "Build complex workflows with our visual pipeline builder",
-    color: "text-accent"
+    id: "2", 
+    title: "Professional",
+    subtitle: "LINKEDIN HEADSHOTS",
+    description: "Transform photos into professional business portraits",
+    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&h=600&fit=crop",
+    badge: "Popular",
+    cta: "CREATE HEADSHOT NOW"
   },
   {
-    icon: Palette,
-    title: "Creative Freedom",
-    description: "Unlimited customization options for every creative need",
-    color: "text-primary-glow"
-  },
-  {
-    icon: Shield,
-    title: "Enterprise Ready",
-    description: "Secure, scalable, and built for professional teams",
-    color: "text-accent"
+    id: "3",
+    title: "E-commerce",
+    subtitle: "PRODUCT SHOWCASE",
+    description: "Professional product photography with perfect lighting",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
+    badge: "New",
+    cta: "BOOST YOUR SALES"
   }
 ];
 
-const stats = [
-  { icon: Users, value: "50K+", label: "Active Creators" },
-  { icon: Star, value: "4.9/5", label: "User Rating" },
-  { icon: TrendingUp, value: "1M+", label: "Templates Generated" },
-  { icon: Rocket, value: "99.9%", label: "Uptime" }
+const categoryTabs = [
+  "Visual Effects",
+  "Viral Content",
+  "Professional",
+  "E-commerce", 
+  "Entertainment",
+  "Social Media",
+  "Marketing",
+  "Education"
+];
+
+const communityTemplates = [
+  {
+    id: "1",
+    image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=300&fit=crop",
+    title: "Cute Pet Portraits"
+  },
+  {
+    id: "2",
+    image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=300&fit=crop",
+    title: "Birthday Videos"
+  },
+  {
+    id: "3",
+    image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop",
+    title: "Travel Highlights"
+  },
+  {
+    id: "4",
+    image: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&h=300&fit=crop",
+    title: "Fashion Lookbooks"
+  },
+  {
+    id: "5",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=300&fit=crop",
+    title: "Corporate Videos"
+  }
 ];
 
 export default function Index() {
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Animated Background Effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-3/4 right-1/4 w-48 h-48 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
-        <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-primary-glow/10 rounded-full blur-2xl animate-pulse-glow" style={{ animationDelay: "1s" }} />
-      </div>
-
-      {/* Navigation */}
-      <nav className="relative z-10 p-6">
-        <div className="container mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="p-2 bg-gradient-primary rounded-lg cyber-glow">
-              <Sparkles className="h-6 w-6 text-background" />
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <main className="space-y-12 pb-16">
+        {/* Category Tabs */}
+        <div className="border-b border-border/50 bg-background/50 backdrop-blur sticky top-14 z-40">
+          <div className="container">
+            <div className="flex items-center gap-6 overflow-x-auto py-3 scrollbar-hide">
+              {categoryTabs.map((tab, index) => (
+                <button
+                  key={tab}
+                  className={`text-sm font-medium whitespace-nowrap pb-1 transition-colors hover:text-foreground ${
+                    index === 0 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              FlexFlowLab
-            </span>
-          </Link>
-          
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" className="hover:bg-primary/10" asChild>
-              <Link to="/templates">Browse Templates</Link>
-            </Button>
-            <Button className="bg-gradient-primary hover:opacity-90 shadow-glow" asChild>
-              <Link to="/dashboard">
-                Get Started <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <main className="relative z-10 container mx-auto px-6 py-16">
-        <div className="text-center max-w-4xl mx-auto space-y-8">
-          <div className="space-y-4">
-            <Badge className="bg-gradient-secondary border-accent/20 text-accent-foreground px-4 py-2">
-              <Zap className="h-4 w-4 mr-2" />
-              Next-Gen AI Platform
-            </Badge>
-            
-            <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-              Create
-              <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent animate-neon-flicker">
-                {" "}Stunning{" "}
-              </span>
-              Content with AI
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Transform your ideas into professional-grade content using our 
-              advanced AI templates and visual pipeline builder.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              size="lg" 
-              className="bg-gradient-primary hover:opacity-90 shadow-glow text-lg px-8 py-6 h-auto group"
-              asChild
-            >
-              <Link to="/create">
-                <Rocket className="h-5 w-5 mr-2 group-hover:animate-bounce" />
-                Start Creating
-              </Link>
-            </Button>
-            
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="neon-border text-lg px-8 py-6 h-auto hover:bg-primary/5"
-              asChild
-            >
-              <Link to="/templates">
-                <Sparkles className="h-5 w-5 mr-2" />
-                Explore Templates
-              </Link>
-            </Button>
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 max-w-4xl mx-auto">
-          {stats.map((stat, index) => (
-            <Card key={index} className="glass-effect text-center p-6 hover:cyber-glow transition-all duration-300 group">
-              <CardContent className="p-0 space-y-2">
-                <stat.icon className="h-8 w-8 mx-auto text-primary group-hover:animate-pulse" />
-                <div className="text-2xl font-bold text-primary">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Features Section */}
-        <div className="mt-32 space-y-12">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Powered by 
-              <span className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-                {" "}Advanced AI
-              </span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Experience the future of content creation with our cutting-edge features
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <Card 
-                key={index} 
-                className="glass-effect p-6 hover:cyber-glow transition-all duration-500 group hover:scale-105"
-                style={{ animationDelay: `${index * 0.1}s` }}
+        {/* Featured Templates - Hero Grid */}
+        <section className="container space-y-6">
+          <div className="grid md:grid-cols-3 gap-4">
+            {featuredTemplates.map((template) => (
+              <Link
+                key={template.id}
+                to="/templates"
+                className="group relative aspect-[4/5] rounded-2xl overflow-hidden bg-card hover:scale-[1.02] transition-all duration-300"
+                style={{
+                  backgroundImage: `url(${template.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
               >
-                <CardHeader className="p-0 pb-4">
-                  <div className={`p-3 rounded-lg bg-gradient-primary/10 w-fit group-hover:animate-pulse`}>
-                    <feature.icon className={`h-6 w-6 ${feature.color}`} />
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                
+                {/* Badge */}
+                <div className="absolute top-4 left-4">
+                  <Badge className="bg-secondary/80 backdrop-blur text-foreground border-border/50 text-xs">
+                    {template.badge}
+                  </Badge>
+                </div>
+
+                {/* Content */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 space-y-3">
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">{template.title}</p>
+                    <h3 className="text-3xl font-bold text-white tracking-tight">
+                      {template.subtitle}
+                    </h3>
                   </div>
-                </CardHeader>
-                <CardContent className="p-0 space-y-2">
-                  <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                    {feature.title}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {feature.description}
+                  
+                  <p className="text-sm text-gray-300">
+                    {template.description}
                   </p>
-                </CardContent>
-              </Card>
+
+                  <Button 
+                    variant="outline" 
+                    className="w-full bg-white/10 backdrop-blur border-white/20 text-white hover:bg-white/20 group-hover:bg-white group-hover:text-black transition-all"
+                  >
+                    {template.cta}
+                  </Button>
+                </div>
+              </Link>
             ))}
           </div>
-        </div>
+        </section>
+
+        {/* Community Section */}
+        <section className="container space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-4xl font-bold text-primary tracking-tight">
+              COMMUNITY TEMPLATES
+            </h2>
+            <Button variant="link" className="text-foreground hover:text-primary" asChild>
+              <Link to="/templates">
+                View All <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {communityTemplates.map((template) => (
+              <Link
+                key={template.id}
+                to="/templates"
+                className="group relative aspect-video rounded-xl overflow-hidden bg-card hover:scale-[1.02] transition-all duration-300"
+              >
+                <img 
+                  src={template.image} 
+                  alt={template.title}
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Hover Overlay */}
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <Play className="h-12 w-12 text-white" />
+                </div>
+
+                {/* Title */}
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
+                  <p className="text-sm font-medium text-white truncate">
+                    {template.title}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {/* CTA Section */}
-        <div className="mt-32 text-center">
-          <Card className="glass-effect p-12 max-w-3xl mx-auto relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
-            <div className="relative z-10 space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-3xl font-bold">Ready to Transform Your Content?</h3>
-                <p className="text-lg text-muted-foreground">
-                  Join thousands of creators who are already using FlexFlowLab 
-                  to build amazing content.
-                </p>
-              </div>
-              
+        <section className="container">
+          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-secondary via-background to-secondary p-12 md:p-16 text-center">
+            <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+              <h2 className="text-4xl md:text-5xl font-bold">
+                Ready to Create?
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Join thousands of creators using FlexFlowLab to build stunning AI-powered content
+              </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-primary hover:opacity-90 shadow-glow text-lg px-8 py-6 h-auto"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 text-base h-12"
                   asChild
                 >
-                  <Link to="/dashboard">
-                    Start Free Trial
+                  <Link to="/create">
+                    <Sparkles className="h-5 w-5 mr-2" />
+                    Start Creating Free
                   </Link>
                 </Button>
-                
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="neon-border text-lg px-8 py-6 h-auto"
+                  className="text-base h-12 border-border hover:bg-secondary"
                   asChild
                 >
                   <Link to="/templates">
-                    View Examples
+                    Browse Templates
                   </Link>
                 </Button>
               </div>
             </div>
-          </Card>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="relative z-10 mt-32 border-t border-border/50 bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-6 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center gap-2 mb-4 md:mb-0">
-              <div className="p-2 bg-gradient-primary rounded-lg">
-                <Sparkles className="h-5 w-5 text-background" />
-              </div>
-              <span className="font-semibold text-foreground">FlexFlowLab</span>
-            </div>
-            
-            <div className="text-sm text-muted-foreground">
-              © 2024 FlexFlowLab. Crafted with ⚡ for creators.
-            </div>
           </div>
-        </div>
-      </footer>
+        </section>
+      </main>
     </div>
   );
 }

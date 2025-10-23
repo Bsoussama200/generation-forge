@@ -27,59 +27,51 @@ export function Header({ className }: HeaderProps) {
   };
 
   return (
-    <header className={cn("sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
-      <div className="container flex h-16 items-center justify-between">
+    <header className={cn("sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/80", className)}>
+      <div className="container flex h-14 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-primary shadow-medium">
-            <Sparkles className="h-8 w-8 text-primary-foreground" />
+        <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+            <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              FlexFlowLab
-            </h1>
-            
-          </div>
+          <span className="text-lg font-bold text-foreground">
+            FlexFlowLab
+          </span>
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Button variant="ghost" className="text-sm font-medium" asChild>
+        <nav className="hidden md:flex items-center space-x-1">
+          <Button variant="ghost" className="text-sm font-medium h-9" asChild>
+            <a href="/">Explore</a>
+          </Button>
+          <Button variant="ghost" className="text-sm font-medium h-9" asChild>
             <a href="/templates">Templates</a>
           </Button>
-          <Button variant="ghost" className="text-sm font-medium">
-            My Templates
-          </Button>
-          <Button variant="outline" className="space-x-2" asChild>
-            <a href="/create">
-              <Plus className="h-4 w-4" />
-              <span>Create</span>
-            </a>
+          <Button variant="ghost" className="text-sm font-medium h-9" asChild>
+            <a href="/create">Create</a>
           </Button>
         </nav>
 
         {/* User Actions */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           {/* Token Balance */}
-          <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gradient-secondary border">
-            <Coins className="h-4 w-4 text-token-gold" />
+          <div className="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-md bg-secondary/50 border border-border/50">
+            <Coins className="h-3.5 w-3.5 text-primary" />
             <span className="text-sm font-medium">{user.tokens.toLocaleString()}</span>
-            <Badge variant="secondary" className="text-xs">tokens</Badge>
           </div>
 
           {/* Buy Tokens Button */}
-          <Button size="sm" className="bg-gradient-primary hover:opacity-90 shadow-soft">
-            <Coins className="h-4 w-4 mr-2" />
-            Buy Tokens
+          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 h-8 text-xs font-medium">
+            Get Credits
           </Button>
 
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                <Avatar className="h-10 w-10">
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
+                <Avatar className="h-8 w-8">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="bg-gradient-primary text-primary-foreground">
+                  <AvatarFallback className="bg-secondary text-foreground text-xs">
                     {user.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
