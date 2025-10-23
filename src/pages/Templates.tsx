@@ -170,12 +170,12 @@ export default function Templates() {
       
       <main className="container py-8 space-y-8">
         {/* Page Header */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold">Templates</h1>
-              <p className="text-muted-foreground mt-2">
-                Discover AI-powered templates for every creative need
+              <h1 className="text-3xl font-bold">Template Marketplace</h1>
+              <p className="text-muted-foreground">
+                Discover and use AI-powered templates created by our community
               </p>
             </div>
             

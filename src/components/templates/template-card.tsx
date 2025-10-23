@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Coins, Star, Heart, Play } from "lucide-react";
+import { Coins, Star, Eye, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TemplateCardProps {
@@ -29,68 +29,98 @@ interface TemplateCardProps {
 
 export function TemplateCard({ template, className }: TemplateCardProps) {
   return (
-    <Card className={cn("overflow-hidden hover:scale-[1.02] transition-all duration-300 group bg-card border-border/50", className)}>
-      <div className="relative aspect-video overflow-hidden bg-secondary">
-        <img 
+    <Card className={cn(
+      "group relative overflow-hidden transition-all duration-300 hover:shadow-medium hover:-translate-y-1 bg-gradient-card border-border/50",
+      className
+    )}>
+      {/* Thumbnail */}
+      <div className="relative aspect-video overflow-hidden bg-gradient-secondary">
+        <img
           src={template.thumbnail}
           alt={template.title}
-          className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onError={(e) => {
+            e.currentTarget.src = "https://images.unsplash.com/photo-1547153760-18fc86324498?w=400&h=225&fit=crop";
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        <div className="absolute top-3 left-3">
-          <Badge className="bg-secondary/80 backdrop-blur text-foreground border-border/50 text-xs">
-            {template.category[0]}
+        
+        {/* Overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        
+        {/* Quick actions on hover */}
+        <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <Button size="sm" variant="secondary" className="shadow-soft">
+            <Eye className="h-4 w-4 mr-1" />
+            Preview
+          </Button>
+          <Button size="sm" className="bg-gradient-primary shadow-soft">
+            Use Template
+          </Button>
+        </div>
+
+        {/* Token cost badge */}
+        <div className="absolute top-3 right-3">
+          <Badge className="bg-background/90 text-foreground border-border/50 shadow-soft">
+            <Coins className="h-3 w-3 mr-1 text-token-gold" />
+            {template.tokenCost}
           </Badge>
         </div>
       </div>
 
-      <CardHeader className="pb-3 space-y-2">
-        <h3 className="text-base line-clamp-1 group-hover:text-primary transition-colors font-semibold">
-          {template.title}
-        </h3>
-        <p className="line-clamp-2 text-xs text-muted-foreground leading-relaxed">
-          {template.description}
-        </p>
+      <CardHeader className="space-y-3">
+        {/* Categories */}
+        <div className="flex flex-wrap gap-1">
+          {template.category.slice(0, 2).map((cat) => (
+            <Badge key={cat} variant="secondary" className="text-xs">
+              {cat}
+            </Badge>
+          ))}
+          {template.category.length > 2 && (
+            <Badge variant="outline" className="text-xs">
+              +{template.category.length - 2}
+            </Badge>
+          )}
+        </div>
+
+        {/* Title and Description */}
+        <div className="space-y-2">
+          <h3 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
+            {template.title}
+          </h3>
+          <p className="text-sm text-muted-foreground line-clamp-2">
+            {template.description}
+          </p>
+        </div>
       </CardHeader>
 
-      <CardContent className="pt-0 space-y-3">
-        {/* Stats */}
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 fill-primary text-primary" />
-            <span className="font-medium">{template.stats.rating}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Play className="h-3.5 w-3.5" />
-            <span>{(template.stats.uses / 1000).toFixed(1)}K</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Heart className="h-3.5 w-3.5" />
-            <span>{(template.stats.likes / 1000).toFixed(1)}K</span>
-          </div>
+      <CardFooter className="flex items-center justify-between pt-0">
+        {/* Creator */}
+        <div className="flex items-center space-x-2">
+          <Avatar className="h-6 w-6">
+            <AvatarImage src={template.creator.avatar} alt={template.creator.name} />
+            <AvatarFallback className="text-xs bg-gradient-primary text-primary-foreground">
+              {template.creator.name[0]}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-xs text-muted-foreground">{template.creator.name}</span>
         </div>
 
-        {/* Creator & Action */}
-        <div className="flex items-center justify-between pt-2 border-t border-border/50">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-5 w-5">
-              <AvatarImage src={template.creator.avatar} alt={template.creator.name} />
-              <AvatarFallback className="text-[10px]">{template.creator.name[0]}</AvatarFallback>
-            </Avatar>
-            <span className="text-xs text-muted-foreground truncate">{template.creator.name}</span>
+        {/* Stats */}
+        <div className="flex items-center space-x-3 text-xs text-muted-foreground">
+          <div className="flex items-center space-x-1">
+            <Star className="h-3 w-3 fill-token-gold text-token-gold" />
+            <span>{template.stats.rating}</span>
           </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Coins className="h-3 w-3 text-primary" />
-              <span className="font-medium">{template.tokenCost}</span>
-            </div>
-            <Button size="sm" className="h-7 text-xs bg-primary text-primary-foreground hover:bg-primary/90">
-              Use
-            </Button>
+          <div className="flex items-center space-x-1">
+            <Heart className="h-3 w-3" />
+            <span>{template.stats.likes}</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Eye className="h-3 w-3" />
+            <span>{template.stats.uses}</span>
           </div>
         </div>
-      </CardContent>
+      </CardFooter>
     </Card>
   );
 }

@@ -8,53 +8,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Runway-Style Dark Theme */
-    --background: 0 0% 7%;
-    --foreground: 0 0% 98%;
+    /* Dark Kryptonite Theme - Modern & Stylish */
+    --background: 240 6% 8%;
+    --foreground: 120 80% 90%;
 
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 95%;
+    --card: 240 5% 10%;
+    --card-foreground: 120 70% 88%;
 
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 240 6% 12%;
+    --popover-foreground: 120 70% 88%;
 
-    /* Bright Yellow-Lime Primary (Runway Style) */
-    --primary: 62 100% 55%;
-    --primary-foreground: 0 0% 7%;
-    --primary-glow: 75 100% 60%;
+    /* Kryptonite Green Primary */
+    --primary: 120 100% 45%;
+    --primary-foreground: 240 6% 8%;
+    --primary-glow: 120 100% 55%;
     
-    /* Dark Muted Secondary */
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 85%;
+    /* Violet Secondary */
+    --secondary: 270 50% 20%;
+    --secondary-foreground: 270 80% 85%;
 
     /* Dark Muted */
-    --muted: 0 0% 18%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
 
-    /* Cyan Accent */
-    --accent: 180 100% 50%;
-    --accent-foreground: 0 0% 7%;
+    /* Electric Violet Accent */
+    --accent: 270 80% 35%;
+    --accent-foreground: 270 80% 90%;
 
     --destructive: 0 80% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 62 100% 55%;
+    --border: 240 5% 18%;
+    --input: 240 5% 16%;
+    --ring: 120 100% 45%;
 
-    /* Runway-Style Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(62, 100%, 50%) 0%, hsl(75, 100%, 55%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(0, 0%, 12%) 0%, hsl(0, 0%, 18%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(0, 0%, 7%) 0%, hsl(0, 0%, 10%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0, 0%, 10%) 0%, hsl(0, 0%, 12%) 100%);
-    --gradient-cyber: radial-gradient(circle at 50% 50%, hsl(62, 100%, 50% / 0.15) 0%, transparent 70%);
+    /* Kryptonite-inspired Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(120, 100%, 35%) 0%, hsl(140, 90%, 45%) 50%, hsl(120, 100%, 55%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(270, 60%, 25%) 0%, hsl(280, 70%, 35%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(240, 6%, 8%) 0%, hsl(270, 50%, 15%) 25%, hsl(120, 100%, 25%) 75%, hsl(120, 100%, 35%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(240, 5%, 10%) 0%, hsl(240, 8%, 14%) 100%);
+    --gradient-cyber: radial-gradient(circle at 50% 50%, hsl(120, 100%, 35% / 0.3) 0%, transparent 70%);
     
-    /* Subtle Shadows */
-    --shadow-soft: 0 2px 15px hsl(0, 0%, 0% / 0.3);
-    --shadow-medium: 0 8px 30px hsl(0, 0%, 0% / 0.4);
-    --shadow-strong: 0 20px 50px hsl(0, 0%, 0% / 0.5);
-    --shadow-glow: 0 0 40px hsl(62, 100%, 50% / 0.3);
-    --shadow-card: 0 4px 20px hsl(0, 0%, 0% / 0.5);
+    /* Neon Glow Shadows */
+    --shadow-soft: 0 2px 15px hsl(120, 100%, 35% / 0.1);
+    --shadow-medium: 0 8px 30px hsl(120, 100%, 35% / 0.15);
+    --shadow-strong: 0 20px 50px hsl(120, 100%, 35% / 0.25);
+    --shadow-glow: 0 0 40px hsl(120, 100%, 45% / 0.4);
+    --shadow-violet: 0 0 30px hsl(270, 80%, 50% / 0.3);
     
     /* Enhanced Token Colors */
     --token-gold: 50 100% 60%;
@@ -85,34 +85,34 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark Mode */
-    --background: 0 0% 5%;
-    --foreground: 0 0% 98%;
+    /* Enhanced Dark Mode - Even deeper with more contrast */
+    --background: 240 8% 4%;
+    --foreground: 120 90% 95%;
 
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 95%;
+    --card: 240 6% 6%;
+    --card-foreground: 120 80% 92%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 240 8% 8%;
+    --popover-foreground: 120 80% 92%;
 
-    --primary: 62 100% 58%;
-    --primary-foreground: 0 0% 5%;
+    --primary: 120 100% 50%;
+    --primary-foreground: 240 8% 4%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 88%;
+    --secondary: 270 60% 15%;
+    --secondary-foreground: 270 90% 90%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 10% 70%;
 
-    --accent: 180 100% 55%;
-    --accent-foreground: 0 0% 5%;
+    --accent: 270 90% 40%;
+    --accent-foreground: 270 90% 95%;
 
     --destructive: 0 90% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 12%;
-    --ring: 62 100% 58%;
+    --border: 240 6% 14%;
+    --input: 240 6% 12%;
+    --ring: 120 100% 50%;
     
     --sidebar-background: 240 8% 6%;
     --sidebar-foreground: 120 80% 90%;
@@ -176,15 +176,5 @@ All colors MUST be HSL.
     background: hsl(var(--card) / 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid hsl(var(--border) / 0.5);
-  }
-
-  /* Hide scrollbar */
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
   }
 }
