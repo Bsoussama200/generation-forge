@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import yopalabLogo from "@/assets/yopalab-logo.png";
 
 interface HeaderProps {
   className?: string;
@@ -12,11 +12,9 @@ export function Header({ className }: HeaderProps) {
     <header className={cn("sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
       <div className="container flex h-14 items-center justify-between px-6">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Sparkles className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-lg font-bold text-foreground">FlexFlowLab</span>
+        <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+          <img src={yopalabLogo} alt="YopaLab" className="h-10 w-10" />
+          <span className="text-lg font-bold text-foreground">YopaLab</span>
         </Link>
 
         {/* Navigation */}
