@@ -197,7 +197,7 @@ export default function Index() {
       <section className="container px-6 py-16">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-4xl font-bold mb-4">
-            Start Building with <span className="text-primary">FlexFlowLab</span>
+            Start Building with <span className="text-primary">YopaLab</span>
           </h2>
           <p className="text-muted-foreground mb-8">
             Create powerful automation workflows and AI-powered templates in minutes
