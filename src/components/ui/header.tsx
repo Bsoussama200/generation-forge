@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import yopalabLogo from "@/assets/yopalab-logo.png";
+import yopalabIcon from "@/assets/yopalab-icon.png";
 
 interface HeaderProps {
   className?: string;
@@ -13,7 +13,7 @@ export function Header({ className }: HeaderProps) {
       <div className="container flex h-14 items-center justify-between px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-          <img src={yopalabLogo} alt="YopaLab" className="h-10 w-10" />
+          <img src={yopalabIcon} alt="YopaLab" className="h-9 w-9 object-contain" />
           <span className="text-lg font-bold text-foreground">YopaLab</span>
         </Link>
 
