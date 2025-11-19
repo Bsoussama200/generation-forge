@@ -13,7 +13,9 @@ export function Header({ className }: HeaderProps) {
       <div className="container flex h-14 items-center justify-between px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-          <img src={yopalabIcon} alt="YopaLab" className="h-9 w-9 object-contain" />
+          <div className="h-9 w-9 rounded-full overflow-hidden">
+            <img src={yopalabIcon} alt="YopaLab" className="h-full w-full object-cover" />
+          </div>
           <span className="text-lg font-bold text-foreground">YopaLab</span>
         </Link>
 
